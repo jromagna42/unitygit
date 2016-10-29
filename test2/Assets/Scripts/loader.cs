@@ -1,16 +1,17 @@
-﻿using UnityEngine;
+﻿
+
+using UnityEngine;
 using System.Collections;
 
-public class loader : MonoBehaviour {
-
-	public GameObject gamemanager;
+public class loader : MonoBehaviour 
+{
+	public GameObject gameManager;
 	// Use this for initialization
-	void awake () 
+	void Awake () 
 	{
 		print("le reveil loader");
 		if (GameManager.instance == null)
-		{
-			Instantiate(gamemanager);
-		}
+			Instantiate(gameManager);	
+
 	}
 }
