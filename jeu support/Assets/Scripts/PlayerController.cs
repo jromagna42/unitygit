@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviour {
 	public float boomrangInitialSpeed = 30;
 	public GameObject DiscPrefab;
 	// Use this for initialization
+	public float dashMulti = 1;
 	void Start ()
 	{
 		if ((assetParent = GameObject.Find(assetParentName)) == null)
@@ -22,7 +23,7 @@ public class PlayerController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () 
 	{
-		Vector3 input = new Vector3(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"), 0);
+		Vector3 input = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
 		Vector3 direction = input.normalized;
 		Vector3 velocity = direction * speed;
 		Vector3 moveAmount = velocity * Time.deltaTime;
@@ -30,8 +31,8 @@ public class PlayerController : MonoBehaviour {
     	
 		Vector3 diff = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position;
         diff.Normalize();
-		float rot_z = Mathf.Atan2(diff.y, diff.x) * Mathf.Rad2Deg;
-        transform.rotation = Quaternion.Euler(0f, 0f, rot_z - 90);
+		float rot_y = Mathf.Atan2(diff.x, diff.z) * Mathf.Rad2Deg;
+        transform.rotation = Quaternion.Euler(90f, rot_y - 90, 0f);
 		rbody.velocity = Vector3.zero;
 
 		if (Input.GetMouseButtonDown(0))
@@ -39,6 +40,11 @@ public class PlayerController : MonoBehaviour {
 			/*GameObject boomrang = */Instantiate(DiscPrefab, transform.position, transform.rotation, assetParent.transform);
 			// Rigidbody2D	ds = boomrang.GetComponent< Rigidbody2D >();
 			// ds.AddForce(diff * boomrangInitialSpeed, ForceMode2D.Impulse);
+		}
+
+		if (Input.GetKeyDown("space"))
+		{
+			rbody.AddForce(diff * dashMulti, ForceMode.Impulse);
 		}
 	}
 }
