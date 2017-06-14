@@ -13,6 +13,7 @@ public class PlayerController : MonoBehaviour {
 	public GameObject DiscPrefab;
 	// Use this for initialization
 	public float dashMulti = 1;
+	public int boomerangCount = 1;
 	void Start ()
 	{
 		if ((assetParent = GameObject.Find(assetParentName)) == null)
@@ -35,9 +36,10 @@ public class PlayerController : MonoBehaviour {
         transform.rotation = Quaternion.Euler(90f, rot_y - 90, 0f);
 		rbody.velocity = Vector3.zero;
 
-		if (Input.GetMouseButtonDown(0))
+		if (Input.GetMouseButtonDown(0) && boomerangCount > 0)
 		{
-			/*GameObject boomrang = */Instantiate(DiscPrefab, transform.position, transform.rotation, assetParent.transform);
+			Instantiate(DiscPrefab, transform.position, transform.rotation, assetParent.transform);
+			boomerangCount--;
 			// Rigidbody2D	ds = boomrang.GetComponent< Rigidbody2D >();
 			// ds.AddForce(diff * boomrangInitialSpeed, ForceMode2D.Impulse);
 		}
