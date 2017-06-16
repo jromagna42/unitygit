@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DiscController : MonoBehaviour {
+public class DiscController2 : MonoBehaviour {
 float finalSpeed = 0;
 public float travelTime = 1;
 public float initialSpeed = 20;
@@ -13,13 +13,8 @@ public float moveAmount;
 float timeFlying = 0;
 public int playerNumber;
 Vector3 mousePos;
-
-	public void SetPlayerNumber(int i)
-	{
-		playerNumber = i;
-	}
+	// Use this for initialization
 	void Start () {
-		
 		mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 		mousePos.y = transform.position.y;
 		diff = mousePos - transform.position;
@@ -65,17 +60,13 @@ Vector3 mousePos;
 	{
 		if (coll.gameObject.tag == "Player" && timeFlying > 1f)
 		{
-			
-			PlayerController collscript = coll.gameObject.GetComponent< PlayerController >();
-			DataStorage.playersBoomerangCount[collscript.playerNumber]++;
-			if (playerNumber != collscript.playerNumber)
-				DataStorage.playersBoomerangCount[playerNumber]++;
+			DataStorage.playersBoomerangCount[playerNumber]++;
 			Destroy(gameObject);
 		}
 		if (coll.gameObject.tag == "wall" && !string.Equals(lastWallHit, coll.gameObject.name))
 		{
-			// print("just hit "  + coll.gameObject.name);
-			// print("last wall " + lastWallHit);
+			print("just hit "  + coll.gameObject.name);
+			print("last wall " + lastWallHit);
 			// ds.MovePosition(transform.position + diff.normalized * (moveAmount * Time.deltaTime));
 			if ((moveAmount < 0 && acceleration < 0) || (moveAmount > 0 && acceleration > 0))
 				acceleration = -acceleration;
