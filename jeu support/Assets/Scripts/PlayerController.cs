@@ -6,7 +6,6 @@ public class PlayerController : MonoBehaviour {
 
 	Rigidbody				rbody;
 
-	public float boomrangInitialSpeed = 30;
 	public GameObject DiscPrefab;
 	// Use this for initialization
 
@@ -33,7 +32,7 @@ public class PlayerController : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () 
+	void FixedUpdate()
 	{
 		if (DataStorage.playersControlType[playerNumber] == 0)
 			MouseKeybord.movement(rbody, gameObject, playerNumber, DiscPrefab);

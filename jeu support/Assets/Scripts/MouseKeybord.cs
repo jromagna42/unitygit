@@ -6,11 +6,11 @@ public class MouseKeybord : MonoBehaviour{
 
     public static void movement(Rigidbody rbody, GameObject gO, int playerNumber, GameObject DiscPrefab)
     {
-        float speed = 30;
+        float speed = 15;
 		Vector3 input = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
 		Vector3 direction = input.normalized;
 		Vector3 velocity = direction * speed;
-		Vector3 moveAmount = velocity * Time.deltaTime;
+		Vector3 moveAmount = velocity * Time.fixedDeltaTime;
 		rbody.MovePosition(gO.transform.position + moveAmount);
     	
 		Vector3 diff = Camera.main.ScreenToWorldPoint(Input.mousePosition) - gO.transform.position;
