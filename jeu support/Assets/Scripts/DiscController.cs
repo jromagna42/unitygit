@@ -61,17 +61,22 @@ Vector3 mousePos;
 		}
 	}
 	string lastWallHit = null;
-	void OnCollisionEnter(Collision coll)
+
+	void OnTriggerEnter(Collider coll)
 	{
+		Debug.Log("hit = " + coll.gameObject.tag);
 		if (coll.gameObject.tag == "Player" && timeFlying > 1f)
 		{
-			
+			Debug.Log("PLAYER HIT");
 			PlayerController collscript = coll.gameObject.GetComponent< PlayerController >();
 			DataStorage.playersBoomerangCount[collscript.playerNumber]++;
 			if (playerNumber != collscript.playerNumber)
 				DataStorage.playersBoomerangCount[playerNumber]++;
 			Destroy(gameObject);
 		}
+	}
+	void OnCollisionEnter(Collision coll)
+	{
 		if (coll.gameObject.tag == "wall" && !string.Equals(lastWallHit, coll.gameObject.name))
 		{
 			// print("just hit "  + coll.gameObject.name);

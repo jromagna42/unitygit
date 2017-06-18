@@ -5,11 +5,14 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour {
 
 	Rigidbody				rbody;
-
+	public MouseKeybord mouseKeybordRef = new MouseKeybord();
+	public Manette manetteRef = new Manette();
 	public GameObject DiscPrefab;
 	// Use this for initialization
 
 	public int playerNumber;
+
+	Vector3 oldPosition;
 	void GivePlayerBoomerang()
 	{
 		int i = 0;
@@ -30,15 +33,21 @@ public class PlayerController : MonoBehaviour {
 		rbody = GetComponent< Rigidbody >();
 		DataStorage.playersGameObject[playerNumber] = gameObject;
 	}
+
+	void Update()
+	{
+		Debug.DrawRay(transform.position, transform.forward * 4, Color.blue);
+		Debug.DrawLine(oldPosition, transform.position, Color.green, 0.7f);
+		oldPosition = transform.position;
+	}
 	
 	// Update is called once per frame
 	void FixedUpdate()
 	{
 		if (DataStorage.playersControlType[playerNumber] == 0)
-			MouseKeybord.movement(rbody, gameObject, playerNumber, DiscPrefab);
+			mouseKeybordRef.movement(rbody, gameObject, playerNumber, DiscPrefab);
 		else if (DataStorage.playersControlType[playerNumber] == 1)
-			Manette.movement(rbody, gameObject, playerNumber, DiscPrefab);
-
+			manetteRef.movement(rbody, gameObject, playerNumber, DiscPrefab);
 
 		// Vector3 input = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
 		// Vector3 direction = input.normalized;
@@ -65,4 +74,5 @@ public class PlayerController : MonoBehaviour {
 		// 	rbody.AddForce(diff * dashMulti, ForceMode.Impulse);
 		// }
 	}
+	
 }
