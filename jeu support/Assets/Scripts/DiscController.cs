@@ -65,7 +65,7 @@ Vector3 mousePos;
 	void OnTriggerEnter(Collider coll)
 	{
 		// Debug.Log("hit = " + coll.gameObject.tag);
-		if (coll.gameObject.tag == "Player" && timeFlying > 1f)
+		if (coll.gameObject.tag == "Player" && timeFlying > 0.2f)
 		{
 			// Debug.Log("PLAYER HIT");
 			PlayerController collscript = coll.gameObject.GetComponent< PlayerController >();

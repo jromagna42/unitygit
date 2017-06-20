@@ -12,4 +12,11 @@ public static class DataStorage {
 	public static int[] playersControlType = new int[playerCount];
 	public static int[] playersBoomerangCount = new int[playerCount];
 	public static 	GameObject				assetParent;
+
+	public static Dictionary<int, Color> playerColors = new Dictionary<int, Color>()
+	{
+ 	   { 0, Color.red},
+ 	   { 1, Color.blue}
+	};
+
 }
