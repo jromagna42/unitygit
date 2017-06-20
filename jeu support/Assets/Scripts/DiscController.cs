@@ -64,10 +64,10 @@ Vector3 mousePos;
 
 	void OnTriggerEnter(Collider coll)
 	{
-		Debug.Log("hit = " + coll.gameObject.tag);
+		// Debug.Log("hit = " + coll.gameObject.tag);
 		if (coll.gameObject.tag == "Player" && timeFlying > 1f)
 		{
-			Debug.Log("PLAYER HIT");
+			// Debug.Log("PLAYER HIT");
 			PlayerController collscript = coll.gameObject.GetComponent< PlayerController >();
 			DataStorage.playersBoomerangCount[collscript.playerNumber]++;
 			if (playerNumber != collscript.playerNumber)

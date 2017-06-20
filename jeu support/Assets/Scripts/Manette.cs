@@ -15,17 +15,17 @@ public class Manette{
 		Vector3 moveAmount = velocity * Time.fixedDeltaTime;
 		rbody.MovePosition(gO.transform.position + moveAmount);
     	
-		Vector3 dir2 = new Vector3 (Input.GetAxisRaw("Horizontal3"), 0, Input.GetAxisRaw("Vertical3"));
+		Vector3 diff = new Vector3 (Input.GetAxisRaw("Horizontal3"), 0, Input.GetAxisRaw("Vertical3"));
 		// print("x = " + dir2.x + "z = " + dir2.z);
-		Vector3 diff = dir2 - gO.transform.position;
+		// Vector3 diff = dir2 - gO.transform.position;
         diff.Normalize();
 		float rot_y = Mathf.Atan2(diff.x, diff.z) * Mathf.Rad2Deg;
         gO.transform.rotation = Quaternion.Euler(0f, rot_y, 0f);
 		// rbody.velocity = Vector3.zero;
 
-		if (Input.GetMouseButtonDown(0) && DataStorage.playersBoomerangCount[playerNumber] > 0)
+		if (Input.GetKey ("joystick button 5") && DataStorage.playersBoomerangCount[playerNumber] > 0)
 		{
-GameObject boomref = GameObject.Instantiate(DiscPrefab, gO.transform.position + gO.transform.forward * spawnDist, gO.transform.rotation * Quaternion.Euler(90, 0, 0), DataStorage.assetParent.transform);
+			GameObject boomref = GameObject.Instantiate(DiscPrefab, gO.transform.position + gO.transform.forward * spawnDist, gO.transform.rotation * Quaternion.Euler(90, 0, 0), DataStorage.assetParent.transform);
 			DataStorage.playersBoomerangCount[playerNumber]--;
 
             DiscController boomrefscript = boomref.GetComponent< DiscController >();
