@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class PlayerController : MonoBehaviour {
 
@@ -21,12 +22,13 @@ public class PlayerController : MonoBehaviour {
 	Vector3 moveAmount;
 	
 	Color playerColor;
-	int dashing = 0;
+	public int dashing = 0;
 	Vector3 dashingDir;
 	public float dashingTime = 1f;
 	float dashedTime = 0f;
 	RaycastHit hitInfo;
 	public float dashMulti = 1;
+	public event Action OnPlayerDeath;
 	void GivePlayerBoomerang()
 	{
 		int i = 0;
@@ -36,6 +38,11 @@ public class PlayerController : MonoBehaviour {
 			DataStorage.playersBoomerangCount[i] = DataStorage.startingBoomerang;
 			i++;
 		}
+	}
+
+	public void KillPlayer()
+	{
+		Destroy(gameObject);
 	}
 	void Start ()
 	{
@@ -93,7 +100,8 @@ public class PlayerController : MonoBehaviour {
 			dashingDir = direction;
 			dashing = 1;
 		}
-
+		if (OnPlayerDeath != null)
+			OnPlayerDeath();
 	}
 	
 

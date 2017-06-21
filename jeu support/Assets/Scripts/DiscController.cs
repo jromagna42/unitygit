@@ -11,15 +11,28 @@ Vector3 diff;
 public float acceleration;
 public float moveAmount;
 float timeFlying = 0;
-public int playerNumber;
+public int playerNumber = -1;
 Vector3 mousePos;
 
 	public void SetPlayerNumber(int i)
 	{
 		playerNumber = i;
 	}
+
+
+	void	Manette()
+	{
+
+
+	}
+
+	void	MouseKeybord()
+	{
+
+	}
 	void Start () {
 		
+		print("playernumber" + playerNumber);
 		mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 		mousePos.y = transform.position.y;
 		diff = mousePos - transform.position;
@@ -64,15 +77,22 @@ Vector3 mousePos;
 
 	void OnTriggerEnter(Collider coll)
 	{
-		// Debug.Log("hit = " + coll.gameObject.tag);
-		if (coll.gameObject.tag == "Player" && timeFlying > 0.2f)
+		if (coll.gameObject.tag == "Player" && playerNumber != -1)
 		{
-			// Debug.Log("PLAYER HIT");
-			PlayerController collscript = coll.gameObject.GetComponent< PlayerController >();
-			DataStorage.playersBoomerangCount[collscript.playerNumber]++;
-			if (playerNumber != collscript.playerNumber)
-				DataStorage.playersBoomerangCount[playerNumber]++;
-			Destroy(gameObject);
+			PlayerController collScript = coll.gameObject.GetComponent< PlayerController >();
+		// Debug.Log("hit = " + coll.gameObject.tag);
+			if (collScript.playerNumber == playerNumber && timeFlying > 0.2f || collScript.dashing == 1)
+			{
+				// Debug.Log("PLAYER HIT");
+				DataStorage.playersBoomerangCount[collScript.playerNumber]++;
+				if (playerNumber != collScript.playerNumber)
+					DataStorage.playersBoomerangCount[playerNumber]++;
+				Destroy(gameObject);
+			}
+			else
+			{
+				collScript.OnPlayerDeath += collScript.KillPlayer;
+			}
 		}
 	}
 	void OnCollisionEnter(Collision coll)
