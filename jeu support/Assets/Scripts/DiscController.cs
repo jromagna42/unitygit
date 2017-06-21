@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class DiscController : MonoBehaviour {
 float finalSpeed = 0;
-public float travelTime = 1;
+public float travelTime = 1f;
 public float initialSpeed = 20;
 Rigidbody	ds;
 Vector3 diff;
@@ -34,9 +34,17 @@ Vector3 mousePos;
 		// playerNumber = -1;
 		if (playerNumber != 0)
 			print("playernumber" + playerNumber);
-		mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-		mousePos.y = transform.position.y;
-		diff = mousePos - transform.position;
+		if (DataStorage.playersControlType[playerNumber] == 0)
+		{
+			mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+			//mousePos.y = transform.position.y;
+			diff = mousePos - transform.position;
+		}
+		if (DataStorage.playersControlType[playerNumber] == 1)
+		{
+			mousePos = new Vector3 (Input.GetAxisRaw("Horizontal3"), 0, Input.GetAxisRaw("Vertical3"));
+			diff = mousePos;
+		}
 		// initialSpeed = ((2 * diff.magnitude) / travelTime) - finalSpeed;
 	
 		ds = gameObject.GetComponent< Rigidbody >();
