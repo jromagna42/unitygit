@@ -11,7 +11,7 @@ Vector3 diff;
 public float acceleration;
 public float moveAmount;
 float timeFlying = 0;
-public int playerNumber = -1;
+int playerNumber = -1;
 Vector3 mousePos;
 
 	public void SetPlayerNumber(int i)
@@ -31,8 +31,9 @@ Vector3 mousePos;
 
 	}
 	void Start () {
-		
-		print("playernumber" + playerNumber);
+		// playerNumber = -1;
+		if (playerNumber != 0)
+			print("playernumber" + playerNumber);
 		mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 		mousePos.y = transform.position.y;
 		diff = mousePos - transform.position;
@@ -89,7 +90,7 @@ Vector3 mousePos;
 					DataStorage.playersBoomerangCount[playerNumber]++;
 				Destroy(gameObject);
 			}
-			else
+			else if (collScript.playerNumber != playerNumber)
 			{
 				collScript.OnPlayerDeath += collScript.KillPlayer;
 			}
