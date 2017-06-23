@@ -28,6 +28,9 @@ public class PlayerController : MonoBehaviour {
 	float dashedTime = 0f;
 	RaycastHit hitInfo;
 	public float dashMulti = 1;
+	int dashUp = 1;
+	float DashUpTimer = 0;
+	Renderer playerRenderer;
 	public event Action OnPlayerDeath;
 	void GivePlayerBoomerang()
 	{
@@ -50,21 +53,34 @@ public class PlayerController : MonoBehaviour {
 		playerNumber = DataStorage.nextPlayer++;
 		DataStorage.playersControlType[playerNumber] = playerNumber;
 		print(DataStorage.playersBoomerangCount[playerNumber]);
-		playerColor = DataStorage.playerColors[playerNumber];
+		playerColor = DataStorage.playerColors[playerNumber].mainColor;
 		rbody = GetComponent< Rigidbody >();
 		DataStorage.playersGameObject[playerNumber] = gameObject;
-		GetComponent<Renderer>().material.color = playerColor;
-		GetComponent<Renderer>().material.SetColor("_EmissionColor",playerColor);
+		playerRenderer = GetComponent<Renderer>();
+		SetMainColor();
+	}
+
+	void SetAltColor()
+	{
+		playerRenderer.material.color = DataStorage.playerColors[playerNumber].altColor;
+		playerRenderer.material.SetColor("_EmissionColor",DataStorage.playerColors[playerNumber].altColor);
+		transform.GetChild(0).gameObject.GetComponent<Renderer>().material.color = DataStorage.playerColors[playerNumber].altColor;;
+		transform.GetChild(0).gameObject.GetComponent<Renderer>().material.SetColor("_EmissionColor",DataStorage.playerColors[playerNumber].altColor);
+	}
+
+	void SetMainColor()
+	{
+		playerRenderer.material.color = playerColor;
+		playerRenderer.material.SetColor("_EmissionColor",playerColor);
 		transform.GetChild(0).gameObject.GetComponent<Renderer>().material.color = playerColor;
 		transform.GetChild(0).gameObject.GetComponent<Renderer>().material.SetColor("_EmissionColor",playerColor);
 	}
-
 	void Update()
 	{
 		Debug.DrawRay(transform.position, transform.forward * 4, Color.blue);
 		Debug.DrawLine(oldPosition, transform.position, Color.green, 0.7f);
 		oldPosition = transform.position;
-		if (Input.GetKey/*Down*/("joystick button 5") && DataStorage.playersBoomerangCount[playerNumber] > 0 && DataStorage.playersControlType[playerNumber] == 1)
+		if (Input.GetKeyDown("joystick button 5") && DataStorage.playersBoomerangCount[playerNumber] > 0 && DataStorage.playersControlType[playerNumber] == 1)
 		{
 			GameObject boomref = GameObject.Instantiate(DiscPrefab, transform.position + transform.forward * spawnDist, transform.rotation * Quaternion.Euler(90, 0, 0), DataStorage.assetParent.transform);
 			
@@ -90,15 +106,28 @@ public class PlayerController : MonoBehaviour {
 			// ds.AddForce(diff * boomrangInitialSpeed, ForceMode2D.Impulse);
 	        DataStorage.playersBoomerangCount[playerNumber]--;
     	}
-		if (Input.GetKeyDown("joystick button 4") && DataStorage.playersControlType[playerNumber] == 1)
+		if (Input.GetKeyDown("joystick button 4") && DataStorage.playersControlType[playerNumber] == 1 && dashUp == 1)
 		{
-			dashingDir = direction;
+			dashingDir = direction.normalized;
 			dashing = 1;
+			dashUp = 0;
+			SetAltColor();
 		}
-		if (Input.GetKeyDown("space")&& DataStorage.playersControlType[playerNumber] == 0)
+		if (Input.GetKeyDown("space") && DataStorage.playersControlType[playerNumber] == 0 && dashUp == 1)
 		{
-			dashingDir = direction;
+			dashingDir = direction.normalized;
 			dashing = 1;
+			dashUp = 0;
+			SetAltColor();
+		}
+		if (dashUp == 0)
+		{
+			DashUpTimer += Time.deltaTime;
+			if (DashUpTimer > 0.6f)
+			{
+				dashUp = 1;
+				DashUpTimer = 0f;
+			}
 		}
 		if (OnPlayerDeath != null)
 			OnPlayerDeath();
@@ -160,7 +189,9 @@ public class PlayerController : MonoBehaviour {
 			MannetteMovement(rbody, playerNumber, DiscPrefab);
 		if (dashing == 1)
 		{
-			if(Physics.Raycast(transform.position, dashingDir , out hitInfo))
+			int layerMask = 1 << 8;
+			layerMask = ~layerMask;
+			if(Physics.Raycast(transform.position, dashingDir , out hitInfo, 10000f, layerMask))
 			{
 				// print("dist hit = " + hitInfo.distance + " thing = " + hitInfo.collider.gameObject.tag);
 				if (hitInfo.distance < dashingDir.magnitude * dashMulti)
@@ -169,6 +200,8 @@ public class PlayerController : MonoBehaviour {
 						dashedTime = 0f;
 						dashing = 0;
 						i = 1;
+						print("dashstop1");
+						SetMainColor();
 					}
 			}
 			if (i == 0)
@@ -180,6 +213,8 @@ public class PlayerController : MonoBehaviour {
 			{
 				dashedTime = 0f;
 				dashing = 0;
+				print("dashstop2");
+				SetMainColor();
 			}
 		}
 	}
@@ -192,6 +227,8 @@ public class PlayerController : MonoBehaviour {
 		{
 			dashedTime = 0;
 			dashing = 0;
+			print("dashstop3");
+			SetMainColor();
 		}
 	}
 	

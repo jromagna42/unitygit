@@ -13,10 +13,15 @@ public static class DataStorage {
 	public static int[] playersBoomerangCount = new int[playerCount];
 	public static 	GameObject				assetParent;
 
-	public static Dictionary<int, Color> playerColors = new Dictionary<int, Color>()
+	public struct PlayerColor
+{
+    public Color mainColor;
+    public Color altColor;
+}
+	public static Dictionary<int, PlayerColor> playerColors = new Dictionary<int, PlayerColor>()
 	{
- 	   { 0, Color.red},
- 	   { 1, Color.blue}
+ 	   { 0, new PlayerColor {mainColor = Color.red , altColor = Color.yellow}},
+ 	   { 1, new PlayerColor {mainColor = Color.blue , altColor = Color.cyan}}
 	};
 
 }

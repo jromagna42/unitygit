@@ -37,7 +37,7 @@ Vector3 mousePos;
 		if (DataStorage.playersControlType[playerNumber] == 0)
 		{
 			mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-			//mousePos.y = transform.position.y;
+			mousePos.y = transform.position.y;
 			diff = mousePos - transform.position;
 		}
 		if (DataStorage.playersControlType[playerNumber] == 1)
@@ -45,8 +45,9 @@ Vector3 mousePos;
 			mousePos = new Vector3 (Input.GetAxisRaw("Horizontal3"), 0, Input.GetAxisRaw("Vertical3"));
 			diff = mousePos;
 		}
+		diff.Normalize();
 		// initialSpeed = ((2 * diff.magnitude) / travelTime) - finalSpeed;
-	
+		
 		ds = gameObject.GetComponent< Rigidbody >();
 		// ds.MovePosition(transform.position + diff.normalized * initialSpeed);
 		acceleration = (finalSpeed- initialSpeed) / (2 * travelTime);
@@ -74,12 +75,12 @@ Vector3 mousePos;
 	{
 		timeFlying += Time.fixedDeltaTime;
 		transform.Rotate(new Vector3(0, 0, 10));
-		ds.MovePosition(transform.position + diff.normalized * (moveAmount * Time.fixedDeltaTime));
+		ds.MovePosition(transform.position + diff * (moveAmount * Time.fixedDeltaTime));
 		moveAmount += acceleration * Time.fixedDeltaTime;
 		if (DataStorage.debug == 1)
 		{
-			Debug.DrawLine(transform.position, transform.position + (diff.normalized * moveAmount), Color.green, Time.fixedDeltaTime );
-			Debug.DrawLine(transform.position, transform.position + (diff.normalized * acceleration), Color.red, Time.fixedDeltaTime );
+			Debug.DrawLine(transform.position, transform.position + (diff * moveAmount), Color.green, Time.fixedDeltaTime );
+			Debug.DrawLine(transform.position, transform.position + (diff * acceleration), Color.red, Time.fixedDeltaTime );
 		}
 	}
 	string lastWallHit = null;
@@ -100,7 +101,8 @@ Vector3 mousePos;
 			}
 			else if (collScript.playerNumber != playerNumber)
 			{
-				collScript.OnPlayerDeath += collScript.KillPlayer;
+				print("PLAYER no" + collScript.playerNumber + " DIEDED!");
+				//collScript.OnPlayerDeath += collScript.KillPlayer;
 			}
 		}
 	}
