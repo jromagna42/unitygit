@@ -5,7 +5,7 @@ using UnityEngine;
 public static class DataStorage {
 
 	public static int nextPlayer = 0;
-	public static int playerCount = 2;
+	public static int playerCount = 3;
 	public static int startingBoomerang = 2;
 	public static int debug = 1;
 	public static GameObject[] playersGameObject = new GameObject[playerCount];
@@ -20,8 +20,9 @@ public static class DataStorage {
 }
 	public static Dictionary<int, PlayerColor> playerColors = new Dictionary<int, PlayerColor>()
 	{
- 	   { 0, new PlayerColor {mainColor = Color.red , altColor = Color.yellow}},
- 	   { 1, new PlayerColor {mainColor = Color.blue , altColor = Color.cyan}}
+ 		{ 0, new PlayerColor {mainColor = Color.red , altColor = Color.magenta}},
+ 		{ 1, new PlayerColor {mainColor = Color.blue , altColor = Color.cyan}},
+		{ 2, new PlayerColor {mainColor = Color.green , altColor = Color.yellow}}
 	};
 
 }
