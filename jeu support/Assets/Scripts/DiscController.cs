@@ -101,8 +101,8 @@ Vector3 mousePos;
 			}
 			else if (collScript.playerNumber != playerNumber)
 			{
-				print("PLAYER no" + collScript.playerNumber + " DIEDED!");
-				//collScript.OnPlayerDeath += collScript.KillPlayer;
+				//print("PLAYER no" + collScript.playerNumber + " DIEDED!");
+				collScript.OnPlayerDeath += collScript.KillPlayer;
 			}
 		}
 	}

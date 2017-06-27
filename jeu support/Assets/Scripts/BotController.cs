@@ -78,68 +78,68 @@ public class BotController : MonoBehaviour {
 		transform.GetChild(0).gameObject.GetComponent<Renderer>().material.SetColor("_EmissionColor",playerColor);
 	}
 
-	void CastDetectionRay()
-	{
-			Dictionary<int, Vector3> RayDir = new Dictionary<int, Vector3>()
-		{
-			{ 0, transform.forward },
-			{ 1, transform.forward },
-			{ 2, transform.forward },
-			{ 3, transform.forward },
-			{ 4, transform.forward },
-			{ 5, transform.forward },
-			{ 6, transform.forward },
-			{ 7, transform.forward },
-			{ 8, transform.forward }
-		};
-		if (Physics.Raycast(transform.position,  transform.forward , out BotHitInfo[0], 8f) == true)
-			Debug.DrawRay(transform.position,  transform.forward * 8f, Color.red );
-		else
-			Debug.DrawRay(transform.position,  transform.forward * 8f, Color.green);
-		if	(Physics.Raycast(transform.position,  -transform.forward , out BotHitInfo[1], 8f) == true)
-			Debug.DrawRay(transform.position,  -transform.forward * 8f, Color.red );
-		else
-			Debug.DrawRay(transform.position,  -transform.forward * 8f, Color.green);
+	// void CastDetectionRay()
+	// {
+	// 		Dictionary<int, Vector3> RayDir = new Dictionary<int, Vector3>()
+	// 	{
+	// 		{ 0, transform.forward },
+	// 		{ 1, transform.forward },
+	// 		{ 2, transform.forward },
+	// 		{ 3, transform.forward },
+	// 		{ 4, transform.forward },
+	// 		{ 5, transform.forward },
+	// 		{ 6, transform.forward },
+	// 		{ 7, transform.forward },
+	// 		{ 8, transform.forward }
+	// 	};
+	// 	if (Physics.Raycast(transform.position,  transform.forward , out BotHitInfo[0], 8f) == true)
+	// 		Debug.DrawRay(transform.position,  transform.forward * 8f, Color.red );
+	// 	else
+	// 		Debug.DrawRay(transform.position,  transform.forward * 8f, Color.green);
+	// 	if	(Physics.Raycast(transform.position,  -transform.forward , out BotHitInfo[1], 8f) == true)
+	// 		Debug.DrawRay(transform.position,  -transform.forward * 8f, Color.red );
+	// 	else
+	// 		Debug.DrawRay(transform.position,  -transform.forward * 8f, Color.green);
 			
-		if	(Physics.Raycast(transform.position,  transform.right , out BotHitInfo[2], 8f) == true)
-			Debug.DrawRay(transform.position,  transform.right * 8f, Color.red );
-		else
-			Debug.DrawRay(transform.position,  transform.right * 8f, Color.green);
+	// 	if	(Physics.Raycast(transform.position,  transform.right , out BotHitInfo[2], 8f) == true)
+	// 		Debug.DrawRay(transform.position,  transform.right * 8f, Color.red );
+	// 	else
+	// 		Debug.DrawRay(transform.position,  transform.right * 8f, Color.green);
 		
-		if	(Physics.Raycast(transform.position,  -transform.right , out BotHitInfo[3], 8f) == true)
-			Debug.DrawRay(transform.position,  -transform.right * 8f, Color.red );
-		else
-			Debug.DrawRay(transform.position,  -transform.right * 8f, Color.green );
+	// 	if	(Physics.Raycast(transform.position,  -transform.right , out BotHitInfo[3], 8f) == true)
+	// 		Debug.DrawRay(transform.position,  -transform.right * 8f, Color.red );
+	// 	else
+	// 		Debug.DrawRay(transform.position,  -transform.right * 8f, Color.green );
 
-		if	(Physics.Raycast(transform.position,  (transform.forward + transform.right).normalized, out BotHitInfo[4], 8f) == true)
-			Debug.DrawRay(transform.position,  (transform.forward + transform.right).normalized * 8f, Color.red );
-		else
-			Debug.DrawRay(transform.position,  (transform.forward + transform.right).normalized * 8f, Color.green );
+	// 	if	(Physics.Raycast(transform.position,  (transform.forward + transform.right).normalized, out BotHitInfo[4], 8f) == true)
+	// 		Debug.DrawRay(transform.position,  (transform.forward + transform.right).normalized * 8f, Color.red );
+	// 	else
+	// 		Debug.DrawRay(transform.position,  (transform.forward + transform.right).normalized * 8f, Color.green );
 
-		if	(Physics.Raycast(transform.position,  (-transform.forward + transform.right).normalized, out BotHitInfo[5], 8f) == true)
-			Debug.DrawRay(transform.position,  (-transform.forward + transform.right).normalized * 8f, Color.red );
-		else
-			Debug.DrawRay(transform.position,  (-transform.forward + transform.right).normalized * 8f, Color.green );
+	// 	if	(Physics.Raycast(transform.position,  (-transform.forward + transform.right).normalized, out BotHitInfo[5], 8f) == true)
+	// 		Debug.DrawRay(transform.position,  (-transform.forward + transform.right).normalized * 8f, Color.red );
+	// 	else
+	// 		Debug.DrawRay(transform.position,  (-transform.forward + transform.right).normalized * 8f, Color.green );
 
-		if	(Physics.Raycast(transform.position,  (transform.forward + -transform.right).normalized, out BotHitInfo[6], 8f) == true)
-			Debug.DrawRay(transform.position,  (transform.forward + -transform.right).normalized * 8f, Color.red );
-		else
-			Debug.DrawRay(transform.position,  (transform.forward + -transform.right).normalized * 8f, Color.green );
+	// 	if	(Physics.Raycast(transform.position,  (transform.forward + -transform.right).normalized, out BotHitInfo[6], 8f) == true)
+	// 		Debug.DrawRay(transform.position,  (transform.forward + -transform.right).normalized * 8f, Color.red );
+	// 	else
+	// 		Debug.DrawRay(transform.position,  (transform.forward + -transform.right).normalized * 8f, Color.green );
 
-		if	(Physics.Raycast(transform.position,  (-transform.forward + -transform.right).normalized, out BotHitInfo[7], 8f) == true)
-			Debug.DrawRay(transform.position,  (-transform.forward + -transform.right).normalized * 8f, Color.red );
-		else
-			Debug.DrawRay(transform.position,  (-transform.forward + -transform.right).normalized * 8f, Color.green );
+	// 	if	(Physics.Raycast(transform.position,  (-transform.forward + -transform.right).normalized, out BotHitInfo[7], 8f) == true)
+	// 		Debug.DrawRay(transform.position,  (-transform.forward + -transform.right).normalized * 8f, Color.red );
+	// 	else
+	// 		Debug.DrawRay(transform.position,  (-transform.forward + -transform.right).normalized * 8f, Color.green );
 
-		// Physics.Raycast(transform.position,  + transform.forward , out hitInfo, 1f);
-		// Physics.Raycast(transform.position,  + transform.forward , out hitInfo, 1f);
-		// Physics.Raycast(transform.position,  + transform.forward , out hitInfo, 1f);
-	}
+	// 	// Physics.Raycast(transform.position,  + transform.forward , out hitInfo, 1f);
+	// 	// Physics.Raycast(transform.position,  + transform.forward , out hitInfo, 1f);
+	// 	// Physics.Raycast(transform.position,  + transform.forward , out hitInfo, 1f);
+	// }
 	void Update()
 	{
 		// Debug.DrawRay(transform.position, transform.forward * 4, Color.blue);
 		Debug.DrawLine(oldPosition, transform.position, Color.green, 0.7f);
-		CastDetectionRay();
+	//	CastDetectionRay();
 		oldPosition = transform.position;
 		if (Input.GetKeyDown("joystick button 5") && DataStorage.playersControlType[playerNumber] == 1)
 		{

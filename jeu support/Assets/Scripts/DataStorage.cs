@@ -25,4 +25,8 @@ public static class DataStorage {
 		{ 2, new PlayerColor {mainColor = Color.green , altColor = Color.yellow}}
 	};
 
+	public static int[,] botTab;
+	public static float camHSize;
+	public static float camVsize;
+	
 }
