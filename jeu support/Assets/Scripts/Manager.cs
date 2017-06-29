@@ -53,7 +53,7 @@ public class Manager : MonoBehaviour {
 			j = 0;
 			while (j < y)
 			{
-				if (tab[i, j] != 0f)
+				if (tab[i, j]  == 1f)
 				{
 					Vector3 start = new Vector3(DataStorage.tabStartPos.x + (i * DataStorage.tabHSize) , 0, DataStorage.tabStartPos.z + (j * DataStorage.tabVSize));
 					Vector3 end = new Vector3(DataStorage.tabStartPos.x + ((i + 1) * DataStorage.tabHSize) , 0, DataStorage.tabStartPos.z + ((j + 1) * DataStorage.tabVSize));
@@ -62,6 +62,15 @@ public class Manager : MonoBehaviour {
 					Debug.DrawLine(start, end, Color.blue, 0.1f);
 					Debug.DrawLine(start2, end2, Color.blue, 0.1f);
 					//Debug.Log("tab[" + i + "][" + j + "] = " + tab[i, j] );
+				}
+				else if (tab[i, j] == 2f)
+				{
+					Vector3 start = new Vector3(DataStorage.tabStartPos.x + (i * DataStorage.tabHSize) , 0, DataStorage.tabStartPos.z + (j * DataStorage.tabVSize));
+					Vector3 end = new Vector3(DataStorage.tabStartPos.x + ((i + 1) * DataStorage.tabHSize) , 0, DataStorage.tabStartPos.z + ((j + 1) * DataStorage.tabVSize));
+					Vector3 start2 = new Vector3(DataStorage.tabStartPos.x + ((i + 1) * DataStorage.tabHSize) , 0, DataStorage.tabStartPos.z + (j * DataStorage.tabVSize));
+					Vector3 end2 = new Vector3(DataStorage.tabStartPos.x + (i * DataStorage.tabHSize) , 0, DataStorage.tabStartPos.z + ((j + 1) * DataStorage.tabVSize));
+					Debug.DrawLine(start, end, Color.red, 0.1f);
+					Debug.DrawLine(start2, end2, Color.red, 0.1f);	
 				}
 				//Debug.Log(tab[i, j]);
 				j++;
