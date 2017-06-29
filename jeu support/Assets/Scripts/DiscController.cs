@@ -60,9 +60,70 @@ Vector3 mousePos;
 		//ds.AddForce(diff.normalized * initialSpeed, ForceMode2D.Impulse);
 	}
 	
+	float botTabTimer = 0;
 	// Update is called once per frame
+	int oldi = 0;
+	int oldj = 0;
+	int i = 0;
+	int j = 0;
+
+	void CleanBotTab()
+	{
+		DataStorage.botTab[oldi, oldj] = 0f;
+		DataStorage.botTab[oldi, oldj + 1] = 0f;
+		DataStorage.botTab[oldi, oldj + 2] = 0f;
+		DataStorage.botTab[oldi + 1, oldj] = 0f;
+		DataStorage.botTab[oldi + 1, oldj + 1] = 0f;
+		DataStorage.botTab[oldi + 1, oldj + 2] = 0f;
+		DataStorage.botTab[oldi + 2, oldj] = 0f;
+		DataStorage.botTab[oldi + 2, oldj + 1] = 0f;
+		DataStorage.botTab[oldi + 2, oldj + 2] = 0f;
+	}
+
+	void RunAwayProtect()
+	{
+		if (i < 0 || i > DataStorage.tabHNumber || j < 0 || j > DataStorage.tabVNumber)
+		{
+			CleanBotTab();
+			DataStorage.playersBoomerangCount[playerNumber]++;
+			Destroy(gameObject);
+		}
+	}
+	void UpdateBotTab()
+	{
+		i = (int)(Mathf.Abs(DataStorage.tabStartPos.x - transform.position.x) / DataStorage.tabHSize);
+		j = (int)(Mathf.Abs(DataStorage.tabStartPos.z - transform.position.z) / DataStorage.tabVSize);
+		RunAwayProtect();
+		i = (i > 0)? i - 1: i;
+		j = (j > 0)? j - 1: j;
+		i = (i >= DataStorage.tabHNumber - 3)? DataStorage.tabHNumber - 3: i;
+		j = (j >= DataStorage.tabVNumber - 3)? DataStorage.tabVNumber - 3: j;
+		DataStorage.botTab[i, j] = 1f;
+
+		DataStorage.botTab[i, j + 1] = 1f;
+		DataStorage.botTab[i, j + 2] = 1f;
+		DataStorage.botTab[i + 1, j] = 1f;
+		DataStorage.botTab[i + 1, j + 1] = 1f;
+		DataStorage.botTab[i + 1, j + 2] = 1f;
+		DataStorage.botTab[i + 2, j] = 1f;
+		DataStorage.botTab[i + 2, j + 1] = 1f;
+		DataStorage.botTab[i + 2, j + 2] = 1f;
+		oldi = i;
+		oldj = j;
+		print("x = " + i + " z = " + j );
+	}
 	void Update () {
-			//ds.AddForce(diff.normalized * (acceleration * Time.deltaTime), ForceMode2D.Impulse);
+			
+			botTabTimer += Time.deltaTime;
+			if (botTabTimer > 0.02f)
+			{
+				CleanBotTab();
+				UpdateBotTab();
+				botTabTimer = 0;
+			}
+			
+			
+						//ds.AddForce(diff.normalized * (acceleration * Time.deltaTime), ForceMode2D.Impulse);
 			// transform.Rotate(new Vector3(0, 0, 10));
 			// ds.MovePosition(transform.position + diff.normalized * (moveAmount * Time.deltaTime));
 			// moveAmount += acceleration * Time.deltaTime;
@@ -97,6 +158,7 @@ Vector3 mousePos;
 				DataStorage.playersBoomerangCount[collScript.playerNumber]++;
 				if (playerNumber != collScript.playerNumber)
 					DataStorage.playersBoomerangCount[playerNumber]++;
+				CleanBotTab();
 				Destroy(gameObject);
 			}
 			else if (collScript.playerNumber != playerNumber)

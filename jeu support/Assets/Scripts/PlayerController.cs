@@ -78,7 +78,7 @@ public class PlayerController : MonoBehaviour {
 	void Update()
 	{
 		Debug.DrawRay(transform.position, transform.forward * 4, Color.blue);
-		Debug.DrawLine(oldPosition, transform.position, Color.green, 0.7f);
+		Debug.DrawLine(oldPosition, transform.position, Color.blue, 0.7f);
 		oldPosition = transform.position;
 		if (Input.GetKeyDown("joystick button 5") && DataStorage.playersBoomerangCount[playerNumber] > 0 && DataStorage.playersControlType[playerNumber] == 1)
 		{
@@ -189,7 +189,7 @@ public class PlayerController : MonoBehaviour {
 			MannetteMovement(rbody, playerNumber, DiscPrefab);
 		if (dashing == 1)
 		{
-			int layerMask = 1 << 8;
+			int layerMask = 1 + (1 << 8);
 			layerMask = ~layerMask;
 			if(Physics.Raycast(transform.position, dashingDir , out hitInfo, 10000f, layerMask))
 			{
@@ -200,7 +200,7 @@ public class PlayerController : MonoBehaviour {
 						dashedTime = 0f;
 						dashing = 0;
 						i = 1;
-						print("dashstop1");
+						print("dashstop1" + hitInfo.transform.gameObject.name);
 						SetMainColor();
 					}
 			}
@@ -223,7 +223,7 @@ public class PlayerController : MonoBehaviour {
 	void OnCollisionEnter(Collision coll)
 	{
 		// print("PLAYER COLIDING");
-		if (coll.gameObject.tag == "wall")
+		if (coll.gameObject.tag == "wall" && dashing == 1)
 		{
 			dashedTime = 0;
 			dashing = 0;

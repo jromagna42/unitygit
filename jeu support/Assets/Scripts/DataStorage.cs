@@ -6,7 +6,7 @@ public static class DataStorage {
 
 	public static int nextPlayer = 0;
 	public static int playerCount = 3;
-	public static int startingBoomerang = 2;
+	public static int startingBoomerang = 10;
 	public static int debug = 1;
 	public static GameObject[] playersGameObject = new GameObject[playerCount];
 	public static int[] playersControlType = new int[playerCount];
@@ -14,10 +14,13 @@ public static class DataStorage {
 	public static 	GameObject				assetParent;
 
 	public struct PlayerColor
-{
-    public Color mainColor;
-    public Color altColor;
-}
+	{
+		public Color mainColor;
+		public Color altColor;
+		
+	}
+
+	public static Vector3 tabStartPos;
 	public static Dictionary<int, PlayerColor> playerColors = new Dictionary<int, PlayerColor>()
 	{
  		{ 0, new PlayerColor {mainColor = Color.red , altColor = Color.magenta}},
@@ -26,7 +29,9 @@ public static class DataStorage {
 	};
 
 	public static float[,] botTab;
-	public static float camHSize;
-	public static float camVSize;
+	public static float tabHSize;
+	public static float tabVSize;
+	public static int tabHNumber = 50;
+	public static int tabVNumber = 50 / 16 * 9;
 	
 }
