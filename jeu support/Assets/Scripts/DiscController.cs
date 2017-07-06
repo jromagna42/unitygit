@@ -222,4 +222,9 @@ Vector3 mousePos;
 		}
 	}
 
+	void OnDrawGizmos()
+	{
+		Gizmos.DrawWireSphere(Vector3.zero, 3);
+	}
+
 }
