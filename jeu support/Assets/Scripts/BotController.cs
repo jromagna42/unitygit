@@ -27,11 +27,13 @@ public class BotController : MonoBehaviour {
 	public float dashingTime = 1f;
 	float dashedTime = 0f;
 	RaycastHit hitInfo;
-	RaycastHit[] BotHitInfo = new RaycastHit[8];
+	int botChangeDir = 0;
+	// RaycastHit[] BotHitInfo = new RaycastHit[8];
 	public float dashMulti = 1;
 	int dashUp = 1;
 	float DashUpTimer = 0;
 	Renderer playerRenderer;
+	int evade = 0;
 	public event Action OnPlayerDeath;
 	void GivePlayerBoomerang()
 	{
@@ -173,18 +175,82 @@ public class BotController : MonoBehaviour {
 		if (OnPlayerDeath != null)
 			OnPlayerDeath();
 	}
-	
+	float botChangeDirTime = 0;
+	Vector3 botDir = Vector3.zero;
 
-    public void BotMovement(Rigidbody rbody, int playerNumber, GameObject DiscPrefab)
+	Vector3 BotDirectionator()
+	{
+			botChangeDirTime += Time.fixedDeltaTime;
+			if(	botChangeDirTime > 0.5f)
+				botChangeDir = 1;
+			if (botChangeDir == 1)
+			{
+				botChangeDirTime = 0;
+				botChangeDir = 0;
+				botDir = UnityEngine.Random.insideUnitSphere;
+				botDir.y = 0;
+			}
+		return(botDir);
+	}
+
+	Vector3 evadeManeuver()
+	{
+
+
+		return(botDir);
+	}
+
+	float botLookAtTime = 0;
+	Vector3 botLookAtRet = Vector3.zero;
+	
+	Vector3 FindClosestPlayer()
+	{
+		Vector3 ret = Vector3.zero;
+		Vector3 temp = Vector3.zero;
+
+		for (int i = 0; i < DataStorage.playerCount ; i++)
+		{
+			if(DataStorage.playersGameObject[i])
+			{
+				if(i != playerNumber)
+				{
+					temp = DataStorage.playersGameObject[i].transform.position - transform.position;
+				}
+				if (ret == Vector3.zero || temp.sqrMagnitude < ret.sqrMagnitude)
+				{
+					ret = temp;
+				}
+			}
+		}
+		return(ret);
+	}
+
+	Vector3 BotLookAt()
+	{
+		botLookAtTime += Time.fixedDeltaTime;
+
+		if (botLookAtTime > 0.1f)
+		{
+			botLookAtRet = FindClosestPlayer();
+			botLookAtTime = 0f;
+		}
+		return(botLookAtRet);
+	}
+
+    public void BotMovement(Rigidbody rbody)
     {
-		input = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
+		if (evade == 0)
+			input = Vector3.zero; //BotDirectionator();
+		else if (evade == 1)
+			input = evadeManeuver();
 		direction = input.normalized;
+		Debug.DrawLine(transform.position, transform.position + direction*10, Color.blue , Time.fixedDeltaTime);
 		velocity = direction * speed;
 		moveAmount = velocity * Time.fixedDeltaTime;
 		
 		rbody.MovePosition(transform.position + moveAmount);
     	
-		diff = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position;
+		diff = BotLookAt();
         diff.Normalize();
 		float rot_y = Mathf.Atan2(diff.x, diff.z) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.Euler(0f, rot_y, 0f);
@@ -198,6 +264,7 @@ public class BotController : MonoBehaviour {
 	void FixedUpdate()
 	{
 		int i = 0;
+		BotMovement(rbody);
 		// if (DataStorage.playersControlType[playerNumber] == 0 && dashing != 1)
 		// 	MouseMovement(rbody, playerNumber, DiscPrefab);
 		// else if (DataStorage.playersControlType[playerNumber] == 1 && dashing != 1)
@@ -234,17 +301,38 @@ public class BotController : MonoBehaviour {
 		}
 	}
 
+	void OnTriggerStay(Collider coll)
+	{
+		if (coll.gameObject.tag == "boomerang")
+		{
+			evade = 1;
+			//print("ESCAAAAAAAAAAAAAAAAAAAPE");
+		}
+	}
 
-	void OnCollisionEnter(Collision coll)
+	// void OnCollisionEnter(Collision coll)
+	// {
+	// 	// print("PLAYER COLIDING");
+	// 	if (coll.gameObject.tag == "wall")
+	// 	{
+	// 		dashedTime = 0;
+	// 		dashing = 0;
+	// 		print("dashstop3");
+	// 		SetMainColor();
+	// 	}
+	// }
+	
+	void OnCollisionStay(Collision coll)
 	{
 		// print("PLAYER COLIDING");
 		if (coll.gameObject.tag == "wall")
 		{
 			dashedTime = 0;
 			dashing = 0;
-			print("dashstop3");
+		//	print("dashstop3");
 			SetMainColor();
+		//	print("change dir");
+			botChangeDir = 1;
 		}
 	}
-	
 }

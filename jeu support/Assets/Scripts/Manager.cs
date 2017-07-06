@@ -83,7 +83,7 @@ public class Manager : MonoBehaviour {
 		timePassed += Time.deltaTime;
 		if (DataStorage.debug == 1)
 		{
-			ShowGrid();
+		//	ShowGrid();
 			if (timePassed > 0.02f)
 			{
 				timePassed = 0f;

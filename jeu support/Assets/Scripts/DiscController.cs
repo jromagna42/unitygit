@@ -110,7 +110,7 @@ Vector3 mousePos;
 		DataStorage.botTab[i + 2, j + 2] = 1f;
 		oldi = i;
 		oldj = j;
-		print("x = " + i + " z = " + j );
+	//	print("x = " + i + " z = " + j );
 	}
 	void Update () {
 			
@@ -146,9 +146,20 @@ Vector3 mousePos;
 	}
 	string lastWallHit = null;
 
+	int	botDieded(Vector3 pos)
+	{
+		float dist = Mathf.Abs((pos - transform.position).magnitude);
+		print(dist);
+		if (dist < 3f)
+			return(1);
+		else
+			return (0);
+	}
+
+	int collnumber = 0;
 	void OnTriggerEnter(Collider coll)
 	{
-		if (coll.gameObject.tag == "Player" && playerNumber != -1)
+		if ((coll.gameObject.tag == "Player") && playerNumber != -1)
 		{
 			PlayerController collScript = coll.gameObject.GetComponent< PlayerController >();
 		// Debug.Log("hit = " + coll.gameObject.tag);
@@ -167,6 +178,27 @@ Vector3 mousePos;
 				collScript.OnPlayerDeath += collScript.KillPlayer;
 			}
 		}
+		if ((coll.gameObject.tag == "bot") && playerNumber != -1)
+		{
+			print("BOT COLLIDED" + collnumber);
+			collnumber++;
+			BotController collScript = coll.gameObject.GetComponent< BotController >();
+		// Debug.Log("hit = " + coll.gameObject.tag);
+			if (collScript.playerNumber == playerNumber && timeFlying > 0.2f || collScript.dashing == 1)
+			{
+				// Debug.Log("PLAYER HIT");
+				DataStorage.playersBoomerangCount[collScript.playerNumber]++;
+				if (playerNumber != collScript.playerNumber)
+					DataStorage.playersBoomerangCount[playerNumber]++;
+				CleanBotTab();
+				Destroy(gameObject);
+			}
+			else if (collScript.playerNumber != playerNumber && botDieded(coll.gameObject.transform.position) == 1)
+			{
+				//print("PLAYER no" + collScript.playerNumber + " DIEDED!");
+				collScript.OnPlayerDeath += collScript.KillPlayer;
+			}
+		}
 	}
 	void OnCollisionEnter(Collision coll)
 	{
@@ -175,10 +207,18 @@ Vector3 mousePos;
 			// print("just hit "  + coll.gameObject.name);
 			// print("last wall " + lastWallHit);
 			// ds.MovePosition(transform.position + diff.normalized * (moveAmount * Time.deltaTime));
-			if ((moveAmount < 0 && acceleration < 0) || (moveAmount > 0 && acceleration > 0))
-				acceleration = -acceleration;
-			moveAmount = 0;
-			lastWallHit = coll.gameObject.name;
+			Vector3 inNormal = Camera.main.transform.position - coll.gameObject.transform.position;
+			inNormal.y = 0f;
+			inNormal = inNormal.normalized;
+			// Debug.Log("pre dir  = " + diff);
+			// Debug.Log("norm  = " + inNormal);
+			Debug.DrawLine(gameObject.transform.position, gameObject.transform.position + (inNormal * 5), Color.red, 1f);
+			diff = Vector3.Reflect(diff, inNormal).normalized;
+			// if ((moveAmount < 0 && acceleration < 0) || (moveAmount > 0 && acceleration > 0))
+			// Debug.Log("posdt dir  = " + diff);
+			acceleration = Mathf.Abs(acceleration);
+			moveAmount /= 1.8f;
+			 lastWallHit = coll.gameObject.name;
 		}
 	}
 

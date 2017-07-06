@@ -134,7 +134,7 @@ public class PlayerController : MonoBehaviour {
 	}
 	
 
-    public void MannetteMovement(Rigidbody rbody, int playerNumber, GameObject DiscPrefab)
+    public void MannetteMovement(Rigidbody rbody)
     {
 		
 		input = new Vector3(Input.GetAxisRaw("Horizontal2"), 0, Input.GetAxisRaw("Vertical2"));
@@ -160,7 +160,7 @@ public class PlayerController : MonoBehaviour {
 	}
 
 
-    public void MouseMovement(Rigidbody rbody, int playerNumber, GameObject DiscPrefab)
+    public void MouseMovement(Rigidbody rbodyr)
     {
 		input = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
 		direction = input.normalized;
@@ -184,9 +184,9 @@ public class PlayerController : MonoBehaviour {
 	{
 		int i = 0;
 		if (DataStorage.playersControlType[playerNumber] == 0 && dashing != 1)
-			MouseMovement(rbody, playerNumber, DiscPrefab);
+			MouseMovement(rbody);
 		else if (DataStorage.playersControlType[playerNumber] == 1 && dashing != 1)
-			MannetteMovement(rbody, playerNumber, DiscPrefab);
+			MannetteMovement(rbody);
 		if (dashing == 1)
 		{
 			int layerMask = 1 + (1 << 8);
