@@ -177,12 +177,15 @@ public class BotController : MonoBehaviour {
 	}
 	float botChangeDirTime = 0;
 	Vector3 botDir = Vector3.zero;
-
+	float nextDirTime = 0.5f;
 	Vector3 BotDirectionator()
 	{
 			botChangeDirTime += Time.fixedDeltaTime;
-			if(	botChangeDirTime > 0.5f)
+			if(	botChangeDirTime > nextDirTime)
+			{
 				botChangeDir = 1;
+				nextDirTime = UnityEngine.Random.Range(0.1f, 1f);
+			}
 			if (botChangeDir == 1)
 			{
 				botChangeDirTime = 0;
@@ -240,7 +243,7 @@ public class BotController : MonoBehaviour {
     public void BotMovement(Rigidbody rbody)
     {
 		if (evade == 0)
-			input = Vector3.zero; //BotDirectionator();
+			input = /*Vector3.zero; */BotDirectionator();
 		else if (evade == 1)
 			input = evadeManeuver();
 		direction = input.normalized;
