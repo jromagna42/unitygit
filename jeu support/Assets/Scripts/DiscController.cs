@@ -46,6 +46,7 @@ Vector3 mousePos;
 			diff = mousePos;
 		}
 		diff.Normalize();
+		diff.y = 0;
 		// initialSpeed = ((2 * diff.magnitude) / travelTime) - finalSpeed;
 		
 		ds = gameObject.GetComponent< Rigidbody >();
@@ -82,10 +83,10 @@ Vector3 mousePos;
 
 	void RunAwayProtect()
 	{
-		if (i < 0 || i > DataStorage.tabHNumber || j < 0 || j > DataStorage.tabVNumber)
+		if (i < -1 || i > DataStorage.tabHNumber + 1 || j < -1 || j > DataStorage.tabVNumber + 1)
 		{
-			CleanBotTab();
 			DataStorage.playersBoomerangCount[playerNumber]++;
+			CleanBotTab();
 			Destroy(gameObject);
 		}
 	}
@@ -202,24 +203,31 @@ Vector3 mousePos;
 	}
 	void OnCollisionEnter(Collision coll)
 	{
-		if (coll.gameObject.tag == "wall" && !string.Equals(lastWallHit, coll.gameObject.name))
-		{
-			// print("just hit "  + coll.gameObject.name);
-			// print("last wall " + lastWallHit);
-			// ds.MovePosition(transform.position + diff.normalized * (moveAmount * Time.deltaTime));
-			Vector3 inNormal = Camera.main.transform.position - coll.gameObject.transform.position;
-			inNormal.y = 0f;
-			inNormal = inNormal.normalized;
-			// Debug.Log("pre dir  = " + diff);
-			// Debug.Log("norm  = " + inNormal);
-			Debug.DrawLine(gameObject.transform.position, gameObject.transform.position + (inNormal * 5), Color.red, 1f);
-			diff = Vector3.Reflect(diff, inNormal).normalized;
-			// if ((moveAmount < 0 && acceleration < 0) || (moveAmount > 0 && acceleration > 0))
-			// Debug.Log("posdt dir  = " + diff);
-			acceleration = Mathf.Abs(acceleration);
-			moveAmount /= 1.8f;
-			 lastWallHit = coll.gameObject.name;
-		}
+		RaycastHit hitInfo;
+		int i = 0;
+			if (coll.gameObject.tag == "wall" && !string.Equals(lastWallHit, coll.gameObject.name) )
+			{
+				while ()
+				{
+					// print("just hit "  + coll.gameObject.name);
+					// print("last wall " + lastWallHit);
+					// ds.MovePosition(transform.position + diff.normalized * (moveAmount * Time.deltaTime));
+					Vector3 inNormal = Camera.main.transform.position - coll.gameObject.transform.position;
+					inNormal.y = 0f;
+					inNormal = inNormal.normalized;
+					// Debug.Log("pre dir  = " + diff);
+					// Debug.Log("norm  = " + inNormal);
+					Debug.DrawLine(gameObject.transform.position, gameObject.transform.position + (inNormal * 5), Color.red, 1f);
+					diff = Vector3.Reflect(diff, inNormal).normalized;
+					diff.y = 0;
+					// if ((moveAmount < 0 && acceleration < 0) || (moveAmount > 0 && acceleration > 0))
+					// Debug.Log("posdt dir  = " + diff);
+					acceleration = Mathf.Abs(acceleration);
+					moveAmount /= 1.8f;
+					moveAmount = Mathf.Abs(moveAmount);
+					lastWallHit = coll.gameObject.name;
+				}
+			}
 	}
 
 	void OnDrawGizmos()

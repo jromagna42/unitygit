@@ -180,26 +180,87 @@ public class BotController : MonoBehaviour {
 	float nextDirTime = 0.5f;
 	Vector3 BotDirectionator()
 	{
-			botChangeDirTime += Time.fixedDeltaTime;
-			if(	botChangeDirTime > nextDirTime)
-			{
-				botChangeDir = 1;
-				nextDirTime = UnityEngine.Random.Range(0.1f, 1f);
-			}
-			if (botChangeDir == 1)
-			{
-				botChangeDirTime = 0;
-				botChangeDir = 0;
-				botDir = UnityEngine.Random.insideUnitSphere;
-				botDir.y = 0;
-			}
+		botChangeDirTime += Time.fixedDeltaTime;
+		if(	botChangeDirTime > nextDirTime)
+		{
+			botChangeDir = 1;
+			nextDirTime = UnityEngine.Random.Range(0.1f, 1f);
+		}
+		if (botChangeDir == 1)
+		{
+			botChangeDirTime = 0;
+			botChangeDir = 0;
+			botDir = UnityEngine.Random.insideUnitSphere;
+			botDir.y = 0;
+		}
 		return(botDir);
 	}
 
+	Vector3 findClosestBoomerang()
+	{
+		int i = (int)(Mathf.Abs(DataStorage.tabStartPos.x - transform.position.x) / DataStorage.tabHSize);
+		int j = (int)(Mathf.Abs(DataStorage.tabStartPos.z - transform.position.z) / DataStorage.tabVSize);
+		int x = -1;
+		int y = -1;
+		int limit = 1;
+		Vector3 ret;
+
+		while (DataStorage.botTab[i + x, j + y] != 1 && limit < 5/*10 / DataStorage.tabVSize*/)
+		{
+				// }		// while (i + x < 0 || j + y < 0 || i + x < DataStorage.tabHSize || j + y < DataStorage.tabVSize)
+			// {
+			//	Debug.Log("x = " + x + " y = " + y);
+				if (x <= limit)
+					x++;
+				else
+				{
+					x = -limit;
+					y++;
+				}
+				if (y > limit)
+				{
+					limit++;
+					y = -limit;
+					x = -limit;
+				}
+
+		}
+		ret = new Vector3((i + x) * DataStorage.tabHSize,0 , (j + y) * DataStorage.tabVSize);
+
+		return ((transform.position - ret).normalized);
+	}
+	Vector3 findAllCloseBoomerang()
+	{
+		Vector3 ret = Vector3.zero;
+		int i = (int)(Mathf.Abs(DataStorage.tabStartPos.x - transform.position.x) / DataStorage.tabHSize);
+		int j = (int)(Mathf.Abs(DataStorage.tabStartPos.z - transform.position.z) / DataStorage.tabVSize);
+		int x = -5;
+		int y = -5;
+
+		while (y < 5)
+		{
+			x = -5;
+			while (x < 5)
+			{
+				if (DataStorage.botTab[i + x, j + y] == 1)
+				{
+					ret += (transform.position - new Vector3((i + x) * DataStorage.tabHSize,0 , (j + y) * DataStorage.tabVSize));
+				}
+				x++;
+			}
+			y++;
+		}
+		return (ret.normalized);
+	}
+
+	public int botType = 1;
 	Vector3 evadeManeuver()
 	{
-
-
+		if (botType == 0)
+			botDir = findClosestBoomerang();
+		else if (botType == 1)
+			botDir = findAllCloseBoomerang();
+		
 		return(botDir);
 	}
 
@@ -245,7 +306,11 @@ public class BotController : MonoBehaviour {
 		if (evade == 0)
 			input = /*Vector3.zero; */BotDirectionator();
 		else if (evade == 1)
+		{
+			evade = 0;
 			input = evadeManeuver();
+		}
+
 		direction = input.normalized;
 		Debug.DrawLine(transform.position, transform.position + direction*10, Color.blue , Time.fixedDeltaTime);
 		velocity = direction * speed;

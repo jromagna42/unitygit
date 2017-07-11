@@ -8,9 +8,9 @@ public class DiscControllerEditor : Editor {
 
 	public void OnSceneGUI()
     {
-		Handles.
-	//	DrawDefaultInspector();
-		Handles.Label(Vector3.zero, "llolokfw");
+		// Handles.
+		// DrawDefaultInspector();
+			//  Handles.Label(Vector3.zero, "llolokfw");
     }
 
 }
