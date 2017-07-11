@@ -5,13 +5,15 @@ using System;
 
 public class BotController : MonoBehaviour {
 
-	Rigidbody				rbody;
 	// public MouseKeybord mouseKeybordRef = new MouseKeybord();
 	// public Manette manetteRef = new Manette();
 	public GameObject DiscPrefab;
-	// Use this for initialization
-
+	public int dashing = 0;
+	public float dashingTime = 1f;
+	public float dashMulti = 1;
+	public int limit = 5;
 	public int playerNumber;
+
 	Vector3 diff = new Vector3();
 	Vector3 oldPosition;
 	float speed = 15;
@@ -19,21 +21,21 @@ public class BotController : MonoBehaviour {
 	Vector3 input;
 	Vector3 direction;
 	Vector3 velocity;
-	Vector3 moveAmount;
+	Vector3			moveAmount;
 	
+	Rigidbody		rbody;
 	Color playerColor;
-	public int dashing = 0;
 	Vector3 dashingDir;
-	public float dashingTime = 1f;
 	float dashedTime = 0f;
 	RaycastHit hitInfo;
 	int botChangeDir = 0;
 	// RaycastHit[] BotHitInfo = new RaycastHit[8];
-	public float dashMulti = 1;
 	int dashUp = 1;
 	float DashUpTimer = 0;
 	Renderer playerRenderer;
 	int evade = 0;
+
+
 	public event Action OnPlayerDeath;
 	void GivePlayerBoomerang()
 	{
@@ -229,26 +231,35 @@ public class BotController : MonoBehaviour {
 
 		return ((transform.position - ret).normalized);
 	}
+
+	bool InTab(int i, int j)
+	{
+		//Debug.Log("i = " + i + " j = " + j);
+		if (i < 0 || i >= DataStorage.tabHNumber - 1 || j < 0 || j >= DataStorage.tabVNumber - 1)
+		{
+			return (false);
+		}
+		return (true);
+	}
+
 	Vector3 findAllCloseBoomerang()
 	{
 		Vector3 ret = Vector3.zero;
 		int i = (int)(Mathf.Abs(DataStorage.tabStartPos.x - transform.position.x) / DataStorage.tabHSize);
 		int j = (int)(Mathf.Abs(DataStorage.tabStartPos.z - transform.position.z) / DataStorage.tabVSize);
-		int x = -5;
-		int y = -5;
+		int x = -limit;
+		int z = -limit;
 
-		while (y < 5)
+		while (z < limit)
 		{
-			x = -5;
-			while (x < 5)
+			x = -limit;
+			while (x < limit)
 			{
-				if (DataStorage.botTab[i + x, j + y] == 1)
-				{
-					ret += (transform.position - new Vector3((i + x) * DataStorage.tabHSize,0 , (j + y) * DataStorage.tabVSize));
-				}
+				if (InTab(i + x, j + z) == true && DataStorage.botTab[i + x, j + z] == 1)
+					ret += (transform.position - new Vector3((i + x) * DataStorage.tabHSize,0 , (j + z) * DataStorage.tabVSize));
 				x++;
 			}
-			y++;
+			z++;
 		}
 		return (ret.normalized);
 	}
@@ -402,5 +413,9 @@ public class BotController : MonoBehaviour {
 		//	print("change dir");
 			botChangeDir = 1;
 		}
+	}
+	void OnDrawGizmos()
+	{
+		Gizmos.DrawWireSphere(transform.position, DataStorage.tabVSize * limit);
 	}
 }

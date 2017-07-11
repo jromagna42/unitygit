@@ -7,7 +7,7 @@ float finalSpeed = 0;
 public float travelTime = 1f;
 public float initialSpeed = 20;
 Rigidbody	ds;
-Vector3 diff;
+Vector3 dir;
 public float acceleration;
 public float moveAmount;
 float timeFlying = 0;
@@ -32,33 +32,39 @@ Vector3 mousePos;
 	}
 	void Start () {
 		// playerNumber = -1;
-		if (playerNumber != 0)
-			print("playernumber" + playerNumber);
+		if (DataStorage.debug >= 2)
+		{
+			if (playerNumber != 0)
+				print("playernumber" + playerNumber);
+		}
 		if (DataStorage.playersControlType[playerNumber] == 0)
 		{
 			mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 			mousePos.y = transform.position.y;
-			diff = mousePos - transform.position;
+			dir = mousePos - transform.position;
 		}
 		if (DataStorage.playersControlType[playerNumber] == 1)
 		{
 			mousePos = new Vector3 (Input.GetAxisRaw("Horizontal3"), 0, Input.GetAxisRaw("Vertical3"));
-			diff = mousePos;
+			dir = mousePos;
 		}
-		diff.Normalize();
-		diff.y = 0;
-		// initialSpeed = ((2 * diff.magnitude) / travelTime) - finalSpeed;
+		dir.Normalize();
+		dir.y = 0;
+		// initialSpeed = ((2 * dir.magnitude) / travelTime) - finalSpeed;
 		
 		ds = gameObject.GetComponent< Rigidbody >();
-		// ds.MovePosition(transform.position + diff.normalized * initialSpeed);
+		// ds.MovePosition(transform.position + dir.normalized * initialSpeed);
 		acceleration = (finalSpeed- initialSpeed) / (2 * travelTime);
 		moveAmount = initialSpeed;
 
-		print("dist:" + diff.magnitude);
-		print("init speed:" + initialSpeed);
-		print("accel:" + acceleration);
+		if (DataStorage.debug >= 2)
+		{
+			print("dist:" + dir.magnitude);
+			print("init speed:" + initialSpeed);
+			print("accel:" + acceleration);
+		}
 
-		//ds.AddForce(diff.normalized * initialSpeed, ForceMode2D.Impulse);
+		//ds.AddForce(dir.normalized * initialSpeed, ForceMode2D.Impulse);
 	}
 	
 	float botTabTimer = 0;
@@ -124,12 +130,12 @@ Vector3 mousePos;
 			}
 			
 			
-						//ds.AddForce(diff.normalized * (acceleration * Time.deltaTime), ForceMode2D.Impulse);
+						//ds.AddForce(dir.normalized * (acceleration * Time.deltaTime), ForceMode2D.Impulse);
 			// transform.Rotate(new Vector3(0, 0, 10));
-			// ds.MovePosition(transform.position + diff.normalized * (moveAmount * Time.deltaTime));
+			// ds.MovePosition(transform.position + dir.normalized * (moveAmount * Time.deltaTime));
 			// moveAmount += acceleration * Time.deltaTime;
-			// Debug.DrawLine(transform.position, transform.position + (diff.normalized * moveAmount), Color.green, Time.deltaTime );
-			// Debug.DrawLine(transform.position, transform.position + (diff.normalized * acceleration), Color.red, Time.deltaTime );
+			// Debug.DrawLine(transform.position, transform.position + (dir.normalized * moveAmount), Color.green, Time.deltaTime );
+			// Debug.DrawLine(transform.position, transform.position + (dir.normalized * acceleration), Color.red, Time.deltaTime );
 			// print("speed:" + moveAmount);
 	}
 
@@ -137,12 +143,19 @@ Vector3 mousePos;
 	{
 		timeFlying += Time.fixedDeltaTime;
 		transform.Rotate(new Vector3(0, 0, 10));
-		ds.MovePosition(transform.position + diff * (moveAmount * Time.fixedDeltaTime));
+		ds.MovePosition(transform.position + dir * (moveAmount * Time.fixedDeltaTime));
 		moveAmount += acceleration * Time.fixedDeltaTime;
+		//Debug.Log(" movam =  " + moveAmount + " acel = " + acceleration);
+		if (moveAmount < 0)
+		{
+			moveAmount = -moveAmount;
+			acceleration = -acceleration;
+			dir = -dir;
+		}
 		if (DataStorage.debug == 1)
 		{
-			Debug.DrawLine(transform.position, transform.position + (diff * moveAmount), Color.green, Time.fixedDeltaTime );
-			Debug.DrawLine(transform.position, transform.position + (diff * acceleration), Color.red, Time.fixedDeltaTime );
+			Debug.DrawLine(transform.position, transform.position + (dir * moveAmount), Color.green, Time.fixedDeltaTime );
+			Debug.DrawLine(transform.position, transform.position + (dir * acceleration), Color.red, Time.fixedDeltaTime );
 		}
 	}
 	string lastWallHit = null;
@@ -207,26 +220,36 @@ Vector3 mousePos;
 		int i = 0;
 			if (coll.gameObject.tag == "wall" && !string.Equals(lastWallHit, coll.gameObject.name) )
 			{
-				while ()
-				{
+				// while ()
+				// {
 					// print("just hit "  + coll.gameObject.name);
 					// print("last wall " + lastWallHit);
-					// ds.MovePosition(transform.position + diff.normalized * (moveAmount * Time.deltaTime));
+					// ds.MovePosition(transform.position + dir.normalized * (moveAmount * Time.deltaTime));
 					Vector3 inNormal = Camera.main.transform.position - coll.gameObject.transform.position;
 					inNormal.y = 0f;
 					inNormal = inNormal.normalized;
-					// Debug.Log("pre dir  = " + diff);
+					// Debug.Log("pre dir  = " + dir);
 					// Debug.Log("norm  = " + inNormal);
-					Debug.DrawLine(gameObject.transform.position, gameObject.transform.position + (inNormal * 5), Color.red, 1f);
-					diff = Vector3.Reflect(diff, inNormal).normalized;
-					diff.y = 0;
+					if (DataStorage.debug >= 1)
+					{
+						DrawArrow.Debug_arrow(gameObject.transform.position - dir * 5 , gameObject.transform.position, Color.blue, 2f);
+					}
+					dir = Vector3.Reflect(dir, inNormal).normalized;
+
+					if (DataStorage.debug >= 1)
+					{
+						DrawArrow.Debug_arrow(gameObject.transform.position, gameObject.transform.position + (inNormal * 5), Color.red, 2f);
+						DrawArrow.Debug_arrow(gameObject.transform.position, gameObject.transform.position + dir * 5, Color.green, 2f);
+					}
+
+					dir.y = 0;
 					// if ((moveAmount < 0 && acceleration < 0) || (moveAmount > 0 && acceleration > 0))
-					// Debug.Log("posdt dir  = " + diff);
+					// Debug.Log("posdt dir  = " + dir);
 					acceleration = Mathf.Abs(acceleration);
 					moveAmount /= 1.8f;
 					moveAmount = Mathf.Abs(moveAmount);
 					lastWallHit = coll.gameObject.name;
-				}
+				// }
 			}
 	}
 

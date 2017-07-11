@@ -20,7 +20,8 @@ public class Manager : MonoBehaviour {
 	}
 
 	// Update is called once per frame
-	
+
+
 	void ShowGrid()
 	{
 		int j = 0;
