@@ -8,6 +8,7 @@ public class BotController : MonoBehaviour {
 	// public MouseKeybord mouseKeybordRef = new MouseKeybord();
 	// public Manette manetteRef = new Manette();
 	public GameObject DiscPrefab;
+	public int botType = 1;
 	public int dashing = 0;
 	public float dashingTime = 1f;
 	public float dashMulti = 1;
@@ -158,13 +159,6 @@ public class BotController : MonoBehaviour {
 			// ds.AddForce(diff * boomrangInitialSpeed, ForceMode2D.Impulse);
 			DataStorage.playersBoomerangCount[playerNumber]--;
 		}
-		if (Input.GetKeyDown("joystick button 4") && dashUp == 1)
-		{
-			dashingDir = direction.normalized;
-			dashing = 1;
-			dashUp = 0;
-			SetAltColor();
-		}
 		if (dashUp == 0)
 		{
 			DashUpTimer += Time.deltaTime;
@@ -196,42 +190,7 @@ public class BotController : MonoBehaviour {
 			botDir.y = 0;
 		}
 		return(botDir);
-	}
-
-	Vector3 findClosestBoomerang()
-	{
-		int i = (int)(Mathf.Abs(DataStorage.tabStartPos.x - transform.position.x) / DataStorage.tabHSize);
-		int j = (int)(Mathf.Abs(DataStorage.tabStartPos.z - transform.position.z) / DataStorage.tabVSize);
-		int x = -1;
-		int y = -1;
-		int limit = 1;
-		Vector3 ret;
-
-		while (DataStorage.botTab[i + x, j + y] != 1 && limit < 5/*10 / DataStorage.tabVSize*/)
-		{
-				// }		// while (i + x < 0 || j + y < 0 || i + x < DataStorage.tabHSize || j + y < DataStorage.tabVSize)
-			// {
-			//	Debug.Log("x = " + x + " y = " + y);
-				if (x <= limit)
-					x++;
-				else
-				{
-					x = -limit;
-					y++;
-				}
-				if (y > limit)
-				{
-					limit++;
-					y = -limit;
-					x = -limit;
-				}
-
-		}
-		ret = new Vector3((i + x) * DataStorage.tabHSize,0 , (j + y) * DataStorage.tabVSize);
-
-		return ((transform.position - ret).normalized);
-	}
-
+	}	
 	bool InTab(int i, int j)
 	{
 		//Debug.Log("i = " + i + " j = " + j);
@@ -241,6 +200,51 @@ public class BotController : MonoBehaviour {
 		}
 		return (true);
 	}
+	Vector3 emergencyDash(Vector3 dir)
+	{
+		dashingDir = -dir.normalized;
+		dashing = 1;
+		dashUp = 0;
+		SetAltColor();
+		return (-dir);
+	}
+	Vector3 findClosestBoomerang()
+	{
+		int i = (int)(Mathf.Abs(DataStorage.tabStartPos.x - transform.position.x) / DataStorage.tabHSize);
+		int j = (int)(Mathf.Abs(DataStorage.tabStartPos.z - transform.position.z) / DataStorage.tabVSize);
+		int x = -1;
+		int z = -1;
+		int actualRadius = 1;
+		Vector3 ret;
+
+		while (actualRadius < 5/*10 / DataStorage.tabVSize*/)
+		{
+			if (InTab(i + x, j + z) == true && DataStorage.botTab[i + x, j + z] == 1)
+				break;
+				// }		// while (i + x < 0 || j + z < 0 || i + x < DataStorage.tabHSize || j + z < DataStorage.tabVSize)
+			// {
+			//	Debug.Log("x = " + x + " z = " + z);
+				if (x <= actualRadius)
+					x++;
+				else
+				{
+					x = -actualRadius;
+					z++;
+				}
+				if (z > actualRadius)
+				{
+					actualRadius++;
+					z = -actualRadius;
+					x = -actualRadius;
+				}
+		}
+		ret = transform.position - new Vector3((i + x) * DataStorage.tabHSize,0 , (j + z) * DataStorage.tabVSize);
+		Debug.Log("RET MAG " + ret.magnitude);
+		if (ret.magnitude < 2f && dashUp == 1)
+			return (emergencyDash(ret));
+		return ((transform.position - ret).normalized);
+	}
+
 
 	Vector3 findAllCloseBoomerang()
 	{
@@ -255,8 +259,23 @@ public class BotController : MonoBehaviour {
 			x = -limit;
 			while (x < limit)
 			{
-				if (InTab(i + x, j + z) == true && DataStorage.botTab[i + x, j + z] == 1)
-					ret += (transform.position - new Vector3((i + x) * DataStorage.tabHSize,0 , (j + z) * DataStorage.tabVSize));
+				if (InTab(i + x, j + z) == true)
+				{
+					if (DataStorage.botTab[i + x, j + z] == 1)
+						{
+							Vector3 debugRay = transform.position - new Vector3((i + x) * DataStorage.tabHSize,0 , (j + z) * DataStorage.tabVSize);
+						//	Debug.DrawLine(transform.position, transform.position + debugRay, Color.yellow, 1f);
+							if (debugRay.magnitude < 2f && dashUp == 1)
+								return (emergencyDash(debugRay));
+							ret += debugRay;
+						}
+				}
+				else
+				{
+					Vector3 debugRay = transform.position - new Vector3((i + x) * DataStorage.tabHSize,0 , (j + z) * DataStorage.tabVSize);
+				//	Debug.DrawLine(transform.position, transform.position + debugRay, Color.yellow, 1f);
+					ret += debugRay;
+				}
 				x++;
 			}
 			z++;
@@ -264,7 +283,7 @@ public class BotController : MonoBehaviour {
 		return (ret.normalized);
 	}
 
-	public int botType = 1;
+
 	Vector3 evadeManeuver()
 	{
 		if (botType == 0)
@@ -416,6 +435,6 @@ public class BotController : MonoBehaviour {
 	}
 	void OnDrawGizmos()
 	{
-		Gizmos.DrawWireSphere(transform.position, DataStorage.tabVSize * limit);
+	//	Gizmos.DrawWireSphere(transform.position, DataStorage.tabVSize * limit);
 	}
 }

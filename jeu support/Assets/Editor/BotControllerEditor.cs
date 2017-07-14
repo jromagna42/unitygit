@@ -29,10 +29,10 @@ public class BotControllerEditor : Editor {
     {
 		if (debug)
 		{
-			Handles.DrawWireDisc(bot.transform.position, Vector3.up, bot.limit);
+			Handles.DrawWireDisc(bot.transform.position, Vector3.up, bot.limit * DataStorage.tabHSize);
 			Handles.color = Color.blue;
 			float size = HandleUtility.GetHandleSize(bot.transform.position) * 1f;
-			Handles.ArrowCap(0, bot.transform.position, bot.transform.rotation, size);
+		//	Handles.ArrowCap(0, bot.transform.position, bot.transform.rotation, size);
 		}
     }
 

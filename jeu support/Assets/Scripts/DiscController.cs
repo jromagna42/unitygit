@@ -160,7 +160,7 @@ Vector3 mousePos;
 	}
 	string lastWallHit = null;
 
-	int	botDieded(Vector3 pos)
+	int	botSmallTrigger(Vector3 pos)
 	{
 		float dist = Mathf.Abs((pos - transform.position).magnitude);
 		print(dist);
@@ -198,7 +198,7 @@ Vector3 mousePos;
 			collnumber++;
 			BotController collScript = coll.gameObject.GetComponent< BotController >();
 		// Debug.Log("hit = " + coll.gameObject.tag);
-			if (collScript.playerNumber == playerNumber && timeFlying > 0.2f || collScript.dashing == 1)
+			if (collScript.playerNumber == playerNumber && timeFlying > 0.2f || collScript.dashing == 1 && botSmallTrigger(coll.gameObject.transform.position) == 1)
 			{
 				// Debug.Log("PLAYER HIT");
 				DataStorage.playersBoomerangCount[collScript.playerNumber]++;
@@ -207,7 +207,7 @@ Vector3 mousePos;
 				CleanBotTab();
 				Destroy(gameObject);
 			}
-			else if (collScript.playerNumber != playerNumber && botDieded(coll.gameObject.transform.position) == 1)
+			else if (collScript.playerNumber != playerNumber && botSmallTrigger(coll.gameObject.transform.position) == 1)
 			{
 				//print("PLAYER no" + collScript.playerNumber + " DIEDED!");
 				collScript.OnPlayerDeath += collScript.KillPlayer;
@@ -230,13 +230,13 @@ Vector3 mousePos;
 					inNormal = inNormal.normalized;
 					// Debug.Log("pre dir  = " + dir);
 					// Debug.Log("norm  = " + inNormal);
-					if (DataStorage.debug >= 1)
+					if (DataStorage.debug >= 2)
 					{
 						DrawArrow.Debug_arrow(gameObject.transform.position - dir * 5 , gameObject.transform.position, Color.blue, 2f);
 					}
 					dir = Vector3.Reflect(dir, inNormal).normalized;
 
-					if (DataStorage.debug >= 1)
+					if (DataStorage.debug >= 2)
 					{
 						DrawArrow.Debug_arrow(gameObject.transform.position, gameObject.transform.position + (inNormal * 5), Color.red, 2f);
 						DrawArrow.Debug_arrow(gameObject.transform.position, gameObject.transform.position + dir * 5, Color.green, 2f);
