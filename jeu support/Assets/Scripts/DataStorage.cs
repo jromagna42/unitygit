@@ -8,7 +8,7 @@ public static class DataStorage {
 
 	public static int nextPlayer = 0;
 	public static int playerCount = 3;
-	public static int startingBoomerang = 10;
+	public static int startingBoomerang = 2;
 	public static GameObject[] playersGameObject = new GameObject[playerCount];
 	public static int[] playersControlType = new int[playerCount];
 	public static int[] playersBoomerangCount = new int[playerCount];

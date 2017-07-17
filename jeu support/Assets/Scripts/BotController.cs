@@ -86,63 +86,6 @@ public class BotController : MonoBehaviour {
 		transform.GetChild(0).gameObject.GetComponent<Renderer>().material.SetColor("_EmissionColor",playerColor);
 	}
 
-	// void CastDetectionRay()
-	// {
-	// 		Dictionary<int, Vector3> RayDir = new Dictionary<int, Vector3>()
-	// 	{
-	// 		{ 0, transform.forward },
-	// 		{ 1, transform.forward },
-	// 		{ 2, transform.forward },
-	// 		{ 3, transform.forward },
-	// 		{ 4, transform.forward },
-	// 		{ 5, transform.forward },
-	// 		{ 6, transform.forward },
-	// 		{ 7, transform.forward },
-	// 		{ 8, transform.forward }
-	// 	};
-	// 	if (Physics.Raycast(transform.position,  transform.forward , out BotHitInfo[0], 8f) == true)
-	// 		Debug.DrawRay(transform.position,  transform.forward * 8f, Color.red );
-	// 	else
-	// 		Debug.DrawRay(transform.position,  transform.forward * 8f, Color.green);
-	// 	if	(Physics.Raycast(transform.position,  -transform.forward , out BotHitInfo[1], 8f) == true)
-	// 		Debug.DrawRay(transform.position,  -transform.forward * 8f, Color.red );
-	// 	else
-	// 		Debug.DrawRay(transform.position,  -transform.forward * 8f, Color.green);
-			
-	// 	if	(Physics.Raycast(transform.position,  transform.right , out BotHitInfo[2], 8f) == true)
-	// 		Debug.DrawRay(transform.position,  transform.right * 8f, Color.red );
-	// 	else
-	// 		Debug.DrawRay(transform.position,  transform.right * 8f, Color.green);
-		
-	// 	if	(Physics.Raycast(transform.position,  -transform.right , out BotHitInfo[3], 8f) == true)
-	// 		Debug.DrawRay(transform.position,  -transform.right * 8f, Color.red );
-	// 	else
-	// 		Debug.DrawRay(transform.position,  -transform.right * 8f, Color.green );
-
-	// 	if	(Physics.Raycast(transform.position,  (transform.forward + transform.right).normalized, out BotHitInfo[4], 8f) == true)
-	// 		Debug.DrawRay(transform.position,  (transform.forward + transform.right).normalized * 8f, Color.red );
-	// 	else
-	// 		Debug.DrawRay(transform.position,  (transform.forward + transform.right).normalized * 8f, Color.green );
-
-	// 	if	(Physics.Raycast(transform.position,  (-transform.forward + transform.right).normalized, out BotHitInfo[5], 8f) == true)
-	// 		Debug.DrawRay(transform.position,  (-transform.forward + transform.right).normalized * 8f, Color.red );
-	// 	else
-	// 		Debug.DrawRay(transform.position,  (-transform.forward + transform.right).normalized * 8f, Color.green );
-
-	// 	if	(Physics.Raycast(transform.position,  (transform.forward + -transform.right).normalized, out BotHitInfo[6], 8f) == true)
-	// 		Debug.DrawRay(transform.position,  (transform.forward + -transform.right).normalized * 8f, Color.red );
-	// 	else
-	// 		Debug.DrawRay(transform.position,  (transform.forward + -transform.right).normalized * 8f, Color.green );
-
-	// 	if	(Physics.Raycast(transform.position,  (-transform.forward + -transform.right).normalized, out BotHitInfo[7], 8f) == true)
-	// 		Debug.DrawRay(transform.position,  (-transform.forward + -transform.right).normalized * 8f, Color.red );
-	// 	else
-	// 		Debug.DrawRay(transform.position,  (-transform.forward + -transform.right).normalized * 8f, Color.green );
-
-	// 	// Physics.Raycast(transform.position,  + transform.forward , out hitInfo, 1f);
-	// 	// Physics.Raycast(transform.position,  + transform.forward , out hitInfo, 1f);
-	// 	// Physics.Raycast(transform.position,  + transform.forward , out hitInfo, 1f);
-	// }
 	void Update()
 	{
 		// Debug.DrawRay(transform.position, transform.forward * 4, Color.blue);
@@ -152,11 +95,11 @@ public class BotController : MonoBehaviour {
 		fireBoomTimer += Time.deltaTime;
 		if (fireBoomTimer > nextFireBoomTimer)
 		{
-			nextFireBoomTimer = UnityEngine.Random.Range(0.05f, 2f);
+			nextFireBoomTimer = UnityEngine.Random.Range(0.05f, 4f);
 			fireBoomTimer = 0f;
 			fireBoom = 1;
 		}
-		if (fireBoom == 1)
+		if (fireBoom == 1 && DataStorage.playersBoomerangCount[playerNumber] > 0)
 		{
 			GameObject boomref = GameObject.Instantiate(DiscPrefab, transform.position + transform.forward * spawnDist, transform.rotation * Quaternion.Euler(90, 0, 0), DataStorage.assetParent.transform);
             DiscController boomrefscript = boomref.GetComponent< DiscController >();
@@ -197,10 +140,10 @@ public class BotController : MonoBehaviour {
 		{
 			Vector3 closestPlayer  = FindClosestPlayer();
 			botDir = UnityEngine.Random.insideUnitSphere;
-				while (closestPlayer.magnitude < 15f && Vector3.Angle(botDir, closestPlayer) < 60f)
-				{
-					botDir = UnityEngine.Random.insideUnitSphere;
-				}
+			while (closestPlayer.magnitude < 15f && Vector3.Angle(botDir, closestPlayer) < 60f)
+			{
+				botDir = UnityEngine.Random.insideUnitSphere;
+			}
 			botChangeDirTime = 0;
 			botChangeDir = 0;
 			botDir.y = 0;
@@ -279,9 +222,9 @@ public class BotController : MonoBehaviour {
 				{
 					if (DataStorage.botTab[i + x, j + z] == playerNumber + 1)
 					{
-						Vector3 debugRay =  new Vector3((i + x) * DataStorage.tabHSize,0 , (j + z) * DataStorage.tabVSize) + transform.position;
+						// Vector3 debugRay = transform.position - new Vector3((i + x) * DataStorage.tabHSize,0 , (j + z) * DataStorage.tabVSize);
 					//	Debug.DrawLine(transform.position, transform.position + debugRay, Color.yellow, 1f);
-						ret += debugRay;
+						// ret -= debugRay;
 					}
 					else if (DataStorage.botTab[i + x, j + z] != 0)
 					{
@@ -425,13 +368,24 @@ public class BotController : MonoBehaviour {
 	{
 		if (coll.gameObject.tag == "boomerang")
 		{
-			DiscController collScript = coll.gameObject.GetComponent< DiscController >();
-			if (collScript.GetPlayerNumber() != playerNumber)
+			// DiscController collScript = coll.gameObject.GetComponent< DiscController >();
+			// if (collScript.GetPlayerNumber() != playerNumber)
 				evade = 1;
 			//print("ESCAAAAAAAAAAAAAAAAAAAPE");
 		}
-		else
-			Debug.Log(coll.gameObject.tag);
+		else if (coll.gameObject.tag == "Player")
+		{
+			Vector3 dir = (coll.transform.position - transform.position);
+		//	Debug.Log((coll.transform.position - transform.position).magnitude);
+			if (dir.magnitude < 4.5f && dashUp == 1)
+			{
+				emergencyDash(-dir);
+				nextFireBoomTimer = UnityEngine.Random.Range(0.05f, 2f);
+				fireBoomTimer = 0f;
+				fireBoom = 1;
+			}
+		}
+		//	Debug.Log(coll.gameObject.tag);
 		
 	}
 

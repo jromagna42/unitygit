@@ -70,9 +70,32 @@ public class Manager : MonoBehaviour {
 			i++;
 		}
 	}
+	void CleanTab(float[,] tab, int x, int y)
+	{
+		int i= 0;
+		int j = 0;
+
+		while (i < x)
+		{
+			j = 0;
+			while (j < y)
+			{
+				tab[i,j] = 0f;
+				j++;
+			}
+			i++;
+		}
+	}
 	float timePassed = 0f;
+	float cleanTabTimer = 0f;
 	void Update () {
 		timePassed += Time.deltaTime;
+		cleanTabTimer += Time.deltaTime;
+		if (cleanTabTimer > 2f)
+		{
+			cleanTabTimer = 0f;
+			CleanTab(DataStorage.botTab, (int)DataStorage.tabHNumber, (int)DataStorage.tabVNumber);
+		}
 		if (DataStorage.debug == 1)
 		{
 		//	ShowGrid();
