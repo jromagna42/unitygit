@@ -15,6 +15,9 @@ public class BotController : MonoBehaviour {
 	public int limit = 5;
 	public int playerNumber;
 
+	int fireBoom = 0;
+	float fireBoomTimer = 0f;
+	float nextFireBoomTimer = 1f;
 	Vector3 diff = new Vector3();
 	Vector3 oldPosition;
 	float speed = 15;
@@ -43,7 +46,7 @@ public class BotController : MonoBehaviour {
 		int i = 0;
 		while (i < DataStorage.playerCount)
 		{
-			print("i = " + i);
+//			print("i = " + i);
 			DataStorage.playersBoomerangCount[i] = DataStorage.startingBoomerang;
 			i++;
 		}
@@ -146,18 +149,25 @@ public class BotController : MonoBehaviour {
 		Debug.DrawLine(oldPosition, transform.position, Color.green, 0.7f);
 	//	CastDetectionRay();
 		oldPosition = transform.position;
-		if (Input.GetKeyDown("joystick button 5") && DataStorage.playersControlType[playerNumber] == 1)
+		fireBoomTimer += Time.deltaTime;
+		if (fireBoomTimer > nextFireBoomTimer)
+		{
+			nextFireBoomTimer = UnityEngine.Random.Range(0.05f, 2f);
+			fireBoomTimer = 0f;
+			fireBoom = 1;
+		}
+		if (fireBoom == 1)
 		{
 			GameObject boomref = GameObject.Instantiate(DiscPrefab, transform.position + transform.forward * spawnDist, transform.rotation * Quaternion.Euler(90, 0, 0), DataStorage.assetParent.transform);
-			
-
             DiscController boomrefscript = boomref.GetComponent< DiscController >();
             boomrefscript.SetPlayerNumber(playerNumber);
+			boomrefscript.SetBotDir(diff);
 			boomref.GetComponent<Renderer>().material.color = playerColor;
 			boomref.GetComponent<Renderer>().material.SetColor("_EmissionColor",playerColor);
 			// Rigidbody2D	ds = boomrang.GetComponent< Rigidbody2D >();
 			// ds.AddForce(diff * boomrangInitialSpeed, ForceMode2D.Impulse);
 			DataStorage.playersBoomerangCount[playerNumber]--;
+			fireBoom = 0;
 		}
 		if (dashUp == 0)
 		{
@@ -176,6 +186,7 @@ public class BotController : MonoBehaviour {
 	float nextDirTime = 0.5f;
 	Vector3 BotDirectionator()
 	{
+		
 		botChangeDirTime += Time.fixedDeltaTime;
 		if(	botChangeDirTime > nextDirTime)
 		{
@@ -184,9 +195,14 @@ public class BotController : MonoBehaviour {
 		}
 		if (botChangeDir == 1)
 		{
+			Vector3 closestPlayer  = FindClosestPlayer();
+			botDir = UnityEngine.Random.insideUnitSphere;
+				while (closestPlayer.magnitude < 15f && Vector3.Angle(botDir, closestPlayer) < 60f)
+				{
+					botDir = UnityEngine.Random.insideUnitSphere;
+				}
 			botChangeDirTime = 0;
 			botChangeDir = 0;
-			botDir = UnityEngine.Random.insideUnitSphere;
 			botDir.y = 0;
 		}
 		return(botDir);
@@ -219,7 +235,7 @@ public class BotController : MonoBehaviour {
 
 		while (actualRadius < 5/*10 / DataStorage.tabVSize*/)
 		{
-			if (InTab(i + x, j + z) == true && DataStorage.botTab[i + x, j + z] == 1)
+			if (InTab(i + x, j + z) == true && DataStorage.botTab[i + x, j + z] == 1 && DataStorage.botTab[i + x, j + z] != playerNumber + 1)
 				break;
 				// }		// while (i + x < 0 || j + z < 0 || i + x < DataStorage.tabHSize || j + z < DataStorage.tabVSize)
 			// {
@@ -239,8 +255,8 @@ public class BotController : MonoBehaviour {
 				}
 		}
 		ret = transform.position - new Vector3((i + x) * DataStorage.tabHSize,0 , (j + z) * DataStorage.tabVSize);
-		Debug.Log("RET MAG " + ret.magnitude);
-		if (ret.magnitude < 2f && dashUp == 1)
+//		Debug.Log("RET MAG " + ret.magnitude);
+		if (ret.magnitude < 2f && dashUp == 1 && DataStorage.botTab[i + x, j + z] != playerNumber + 1)
 			return (emergencyDash(ret));
 		return ((transform.position - ret).normalized);
 	}
@@ -261,14 +277,20 @@ public class BotController : MonoBehaviour {
 			{
 				if (InTab(i + x, j + z) == true)
 				{
-					if (DataStorage.botTab[i + x, j + z] == 1)
-						{
-							Vector3 debugRay = transform.position - new Vector3((i + x) * DataStorage.tabHSize,0 , (j + z) * DataStorage.tabVSize);
-						//	Debug.DrawLine(transform.position, transform.position + debugRay, Color.yellow, 1f);
-							if (debugRay.magnitude < 2f && dashUp == 1)
-								return (emergencyDash(debugRay));
-							ret += debugRay;
-						}
+					if (DataStorage.botTab[i + x, j + z] == playerNumber + 1)
+					{
+						Vector3 debugRay =  new Vector3((i + x) * DataStorage.tabHSize,0 , (j + z) * DataStorage.tabVSize) + transform.position;
+					//	Debug.DrawLine(transform.position, transform.position + debugRay, Color.yellow, 1f);
+						ret += debugRay;
+					}
+					else if (DataStorage.botTab[i + x, j + z] != 0)
+					{
+						Vector3 debugRay = transform.position - new Vector3((i + x) * DataStorage.tabHSize,0 , (j + z) * DataStorage.tabVSize);
+					//	Debug.DrawLine(transform.position, transform.position + debugRay, Color.yellow, 1f);
+						if (debugRay.magnitude < 3f && dashUp == 1)
+							return (emergencyDash(debugRay));
+						ret += debugRay;
+					}
 				}
 				else
 				{
@@ -380,7 +402,7 @@ public class BotController : MonoBehaviour {
 						dashedTime = 0f;
 						dashing = 0;
 						i = 1;
-						print("dashstop1");
+				//		print("dashstop1");
 						SetMainColor();
 					}
 			}
@@ -393,7 +415,7 @@ public class BotController : MonoBehaviour {
 			{
 				dashedTime = 0f;
 				dashing = 0;
-				print("dashstop2");
+		//		print("dashstop2");
 				SetMainColor();
 			}
 		}
@@ -403,9 +425,14 @@ public class BotController : MonoBehaviour {
 	{
 		if (coll.gameObject.tag == "boomerang")
 		{
-			evade = 1;
+			DiscController collScript = coll.gameObject.GetComponent< DiscController >();
+			if (collScript.GetPlayerNumber() != playerNumber)
+				evade = 1;
 			//print("ESCAAAAAAAAAAAAAAAAAAAPE");
 		}
+		else
+			Debug.Log(coll.gameObject.tag);
+		
 	}
 
 	// void OnCollisionEnter(Collision coll)

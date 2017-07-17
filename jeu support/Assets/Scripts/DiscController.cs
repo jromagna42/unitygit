@@ -19,6 +19,15 @@ Vector3 mousePos;
 		playerNumber = i;
 	}
 
+	public int GetPlayerNumber()
+	{
+		return(playerNumber);
+	}
+
+	public void SetBotDir(Vector3 botDir)
+	{
+		dir = botDir;
+	}
 
 	void	Manette()
 	{
@@ -105,16 +114,16 @@ Vector3 mousePos;
 		j = (j > 0)? j - 1: j;
 		i = (i >= DataStorage.tabHNumber - 3)? DataStorage.tabHNumber - 3: i;
 		j = (j >= DataStorage.tabVNumber - 3)? DataStorage.tabVNumber - 3: j;
-		DataStorage.botTab[i, j] = 1f;
+		DataStorage.botTab[i, j] = playerNumber + 1;
 
-		DataStorage.botTab[i, j + 1] = 1f;
-		DataStorage.botTab[i, j + 2] = 1f;
-		DataStorage.botTab[i + 1, j] = 1f;
-		DataStorage.botTab[i + 1, j + 1] = 1f;
-		DataStorage.botTab[i + 1, j + 2] = 1f;
-		DataStorage.botTab[i + 2, j] = 1f;
-		DataStorage.botTab[i + 2, j + 1] = 1f;
-		DataStorage.botTab[i + 2, j + 2] = 1f;
+		DataStorage.botTab[i, j + 1] = playerNumber + 1;
+		DataStorage.botTab[i, j + 2] = playerNumber + 1;
+		DataStorage.botTab[i + 1, j] = playerNumber + 1;
+		DataStorage.botTab[i + 1, j + 1] = playerNumber + 1;
+		DataStorage.botTab[i + 1, j + 2] = playerNumber + 1;
+		DataStorage.botTab[i + 2, j] = playerNumber + 1;
+		DataStorage.botTab[i + 2, j + 1] = playerNumber + 1;
+		DataStorage.botTab[i + 2, j + 2] = playerNumber + 1;
 		oldi = i;
 		oldj = j;
 	//	print("x = " + i + " z = " + j );
@@ -163,7 +172,7 @@ Vector3 mousePos;
 	int	botSmallTrigger(Vector3 pos)
 	{
 		float dist = Mathf.Abs((pos - transform.position).magnitude);
-		print(dist);
+	//	print(dist);
 		if (dist < 3f)
 			return(1);
 		else
@@ -194,11 +203,11 @@ Vector3 mousePos;
 		}
 		if ((coll.gameObject.tag == "bot") && playerNumber != -1)
 		{
-			print("BOT COLLIDED" + collnumber);
+		//	print("BOT COLLIDED" + collnumber);
 			collnumber++;
 			BotController collScript = coll.gameObject.GetComponent< BotController >();
 		// Debug.Log("hit = " + coll.gameObject.tag);
-			if (collScript.playerNumber == playerNumber && timeFlying > 0.2f || collScript.dashing == 1 && botSmallTrigger(coll.gameObject.transform.position) == 1)
+			if ((collScript.playerNumber == playerNumber && timeFlying > 0.2f || collScript.dashing == 1 )&& botSmallTrigger(coll.gameObject.transform.position) == 1)
 			{
 				// Debug.Log("PLAYER HIT");
 				DataStorage.playersBoomerangCount[collScript.playerNumber]++;
@@ -216,8 +225,6 @@ Vector3 mousePos;
 	}
 	void OnCollisionEnter(Collision coll)
 	{
-		RaycastHit hitInfo;
-		int i = 0;
 			if (coll.gameObject.tag == "wall" && !string.Equals(lastWallHit, coll.gameObject.name) )
 			{
 				// while ()

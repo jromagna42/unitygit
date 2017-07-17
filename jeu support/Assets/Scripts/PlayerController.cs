@@ -37,7 +37,7 @@ public class PlayerController : MonoBehaviour {
 		int i = 0;
 		while (i < DataStorage.playerCount)
 		{
-			print("i = " + i);
+	//		print("i = " + i);
 			DataStorage.playersBoomerangCount[i] = DataStorage.startingBoomerang;
 			i++;
 		}
@@ -200,7 +200,7 @@ public class PlayerController : MonoBehaviour {
 						dashedTime = 0f;
 						dashing = 0;
 						i = 1;
-						print("dashstop1" + hitInfo.transform.gameObject.name);
+			//			print("dashstop1" + hitInfo.transform.gameObject.name);
 						SetMainColor();
 					}
 			}
@@ -213,7 +213,7 @@ public class PlayerController : MonoBehaviour {
 			{
 				dashedTime = 0f;
 				dashing = 0;
-				print("dashstop2");
+			//	print("dashstop2");
 				SetMainColor();
 			}
 		}
@@ -227,7 +227,7 @@ public class PlayerController : MonoBehaviour {
 		{
 			dashedTime = 0;
 			dashing = 0;
-			print("dashstop3");
+	//		print("dashstop3");
 			SetMainColor();
 		}
 	}
