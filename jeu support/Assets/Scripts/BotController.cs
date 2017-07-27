@@ -60,8 +60,8 @@ public class BotController : MonoBehaviour {
 	{
 		GivePlayerBoomerang();
 	//	playerNumber = DataStorage.nextPlayer++;
-		playerNumber = DataStorage.playerCount - 1;
-		DataStorage.playersControlType[playerNumber] = playerNumber;
+		playerNumber = DataStorage.nextPlayer++;
+		DataStorage.playersControlType[playerNumber] = 2;
 		print(DataStorage.playersBoomerangCount[playerNumber]);
 		playerColor = DataStorage.playerColors[playerNumber].mainColor;
 		rbody = GetComponent< Rigidbody >();
@@ -255,7 +255,6 @@ public class BotController : MonoBehaviour {
 			botDir = findClosestBoomerang();
 		else if (botType == 1)
 			botDir = findAllCloseBoomerang();
-		
 		return(botDir);
 	}
 
