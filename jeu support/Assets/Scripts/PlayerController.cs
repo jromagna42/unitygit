@@ -80,6 +80,14 @@ public class PlayerController : MonoBehaviour {
 		Debug.DrawRay(transform.position, transform.forward * 4, Color.blue);
 		Debug.DrawLine(oldPosition, transform.position, Color.blue, 0.7f);
 		oldPosition = transform.position;
+		if (Input.GetKeyDown("joystick button 0"))
+			Debug.Log("press0");
+		if (Input.GetKeyDown("joystick button 1"))
+			Debug.Log("press1");
+		if (Input.GetKeyDown("joystick button 2"))
+			Debug.Log("press2");
+		if (Input.GetKeyDown("joystick button 3"))
+			Debug.Log("press3");
 		if (Input.GetKeyDown("joystick button 5") && DataStorage.playersBoomerangCount[playerNumber] > 0 && DataStorage.playersControlType[playerNumber] == 1)
 		{
 			GameObject boomref = GameObject.Instantiate(DiscPrefab, transform.position + transform.forward * spawnDist, transform.rotation * Quaternion.Euler(90, 0, 0), DataStorage.assetParent.transform);

@@ -367,8 +367,8 @@ public class BotController : MonoBehaviour {
 	{
 		if (coll.gameObject.tag == "boomerang")
 		{
-			// DiscController collScript = coll.gameObject.GetComponent< DiscController >();
-			// if (collScript.GetPlayerNumber() != playerNumber)
+			DiscController collScript = coll.gameObject.GetComponent< DiscController >();
+			if (collScript.GetPlayerNumber() != playerNumber)
 				evade = 1;
 			//print("ESCAAAAAAAAAAAAAAAAAAAPE");
 		}

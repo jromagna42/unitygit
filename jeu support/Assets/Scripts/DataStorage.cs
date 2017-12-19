@@ -7,7 +7,7 @@ public static class DataStorage {
 	public static int debug = 1;
 
 	public static int nextPlayer = 0;
-	public static int playerCount = 3;
+	public static int playerCount = 4;
 	public static int startingBoomerang = 5;
 	public static GameObject[] playersGameObject = new GameObject[playerCount];
 	public static int[] playersControlType = new int[playerCount];
@@ -26,7 +26,8 @@ public static class DataStorage {
 	{
  		{ 0, new PlayerColor {mainColor = Color.red , altColor = Color.magenta}},
  		{ 1, new PlayerColor {mainColor = Color.blue , altColor = Color.cyan}},
-		{ 2, new PlayerColor {mainColor = Color.green , altColor = Color.yellow}}
+		{ 2, new PlayerColor {mainColor = Color.green , altColor = Color.yellow}},
+		{ 3, new PlayerColor {mainColor = Color.black , altColor = Color.white}}
 	};
 
 	public static float[,] botTab;
